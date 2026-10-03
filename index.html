@@ -1378,16 +1378,18 @@ async function pushToCloud() {
     });
     await supaUpsert('customers', custRows, 'phone');
 
+    // kategori harus ada dulu di database sebelum produk (foreign key)
+    var cats = JSON.parse(localStorage.getItem('wmd_cats_v1')||'[]');
     var prods = JSON.parse(localStorage.getItem('wmd_products_v2')||'[]');
+    prods.forEach(function(p){ if (p.cat && cats.indexOf(p.cat) < 0) cats.push(p.cat); });
+    var catRows = cats.map(function(c){ return {name:c}; });
+    await supaUpsert('categories', catRows, 'name');
+
     var prodRows = prods.map(function(p){
       return {id:p.id, name:p.name, icon:p.icon||'', price:p.price||0, stock:p.stock||0, unit:p.unit||'pcs',
         category:p.cat||null, badge:p.badge||'', active:p.active!==false, cb_rp:p.cbRp||0, data:p};
     });
     await supaUpsert('products', prodRows, 'id');
-
-    var cats = JSON.parse(localStorage.getItem('wmd_cats_v1')||'[]');
-    var catRows = cats.map(function(c){ return {name:c}; });
-    await supaUpsert('categories', catRows, 'name');
 
     var s = JSON.parse(localStorage.getItem('wmd_settings_v2')||'null');
     if (s) {

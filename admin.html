@@ -695,8 +695,9 @@ async function supaUpsert(table, rows, onConflict) {
       headers: supaHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
       body: JSON.stringify(rows)
     });
+    if (!r.ok) { var t=''; try{ t=await r.text(); }catch(_){} window._syncErr = table+': HTTP '+r.status+' '+t.slice(0,220); }
     return r.ok;
-  } catch(e) { return false; }
+  } catch(e) { window._syncErr = table+': '+e.message; return false; }
 }
 
 async function supaSelectAll(table) {
@@ -734,6 +735,7 @@ function scheduleCloudPush() {
 }
 
 async function pushToCloud() {
+  window._syncErr = '';
   showSyncStatus('busy', 'Menyimpan...');
   try {
     var users = JSON.parse(localStorage.getItem('wmd_users_v2')||'{}');
@@ -798,7 +800,8 @@ async function pushToCloud() {
     });
     await supaUpsert('pawns', pawnRows, 'id');
 
-    showSyncStatus('ok', 'Tersimpan');
+    if (window._syncErr) { showSyncStatus('err', 'Gagal sinkron'); alert('⚠️ Data belum masuk ke database:\n' + window._syncErr); }
+    else showSyncStatus('ok', 'Tersimpan');
   } catch(e) {
     showSyncStatus('err', 'Gagal simpan');
   }
@@ -1129,8 +1132,9 @@ async function supaUpsert(table, rows, onConflict) {
       headers: supaHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
       body: JSON.stringify(rows)
     });
+    if (!r.ok) { var t=''; try{ t=await r.text(); }catch(_){} window._syncErr = table+': HTTP '+r.status+' '+t.slice(0,220); }
     return r.ok;
-  } catch(e) { return false; }
+  } catch(e) { window._syncErr = table+': '+e.message; return false; }
 }
 
 async function supaSelectAll(table) {
@@ -1168,6 +1172,7 @@ function scheduleCloudPush() {
 }
 
 async function pushToCloud() {
+  window._syncErr = '';
   showSyncStatus('busy', 'Menyimpan...');
   try {
     var users = JSON.parse(localStorage.getItem('wmd_users_v2')||'{}');
@@ -1232,7 +1237,8 @@ async function pushToCloud() {
     });
     await supaUpsert('pawns', pawnRows, 'id');
 
-    showSyncStatus('ok', 'Tersimpan');
+    if (window._syncErr) { showSyncStatus('err', 'Gagal sinkron'); alert('⚠️ Data belum masuk ke database:\n' + window._syncErr); }
+    else showSyncStatus('ok', 'Tersimpan');
   } catch(e) {
     showSyncStatus('err', 'Gagal simpan');
   }

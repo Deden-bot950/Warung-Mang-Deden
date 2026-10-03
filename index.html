@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warung Mang Deden</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --g1:#1a6b42;--g2:#28a05f;--g3:#3dbd7a;
+  --gold:#f5a623;--gold2:#ffd166;
+  --dark:#071510;--mid:#163025;--soft:#f2f8f5;
+  --white:#fff;--gray:#7a9285;--light:#e8f3ec;--border:#cde8d9;
+  --red:#e03c3c;--blue:#1a6fa4;--orange:#e67e22;--purple:#6f42c1;
+  --r:16px;--rs:12px;--sh:0 2px 14px rgba(26,107,66,.08);--sh2:0 8px 24px rgba(26,107,66,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--soft);color:var(--dark);min-height:100vh;-webkit-font-smoothing:antialiased;}
+button{cursor:pointer;font-family:inherit;border:none;}
+
+/* AUTH */
+#authWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(155deg,var(--dark) 0%,var(--mid) 45%,var(--g1) 100%);padding:20px;position:relative;overflow:hidden;}
+#authWrap::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(61,189,122,.15);top:-100px;right:-100px;filter:blur(40px);}
+#authWrap::after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;background:rgba(245,166,35,.15);bottom:-80px;left:-80px;filter:blur(40px);}
+.auth-box{background:#fff;border-radius:24px;padding:34px 26px 28px;width:100%;max-width:380px;box-shadow:0 30px 80px rgba(0,0,0,.45);position:relative;z-index:2;}
+.brand{text-align:center;margin-bottom:24px;}
+.brand-ico{width:74px;height:74px;background:linear-gradient(135deg,var(--g1),var(--g2));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 12px;box-shadow:0 12px 28px rgba(26,107,66,.4);}
+.brand h1{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--g1),var(--g2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.brand p{font-size:11px;color:var(--gray);margin-top:4px;font-weight:500;}
+.tabs{display:flex;background:#f0f7f3;border-radius:12px;padding:4px;margin-bottom:16px;}
+.tab{flex:1;padding:10px;background:transparent;border-radius:9px;font-size:13px;font-weight:700;color:var(--gray);transition:all .25s;}
+.tab.on{background:#fff;color:var(--g1);box-shadow:0 2px 6px rgba(0,0,0,.08);}
+.ain{width:100%;padding:13px 15px;border:2px solid var(--border);border-radius:12px;font-size:14px;outline:none;margin-bottom:10px;background:#fafafa;transition:all .2s;}
+.ain:focus{border-color:var(--g2);background:#fff;box-shadow:0 0 0 4px rgba(40,160,95,.1);}
+.btn-prim{width:100%;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:14px;border-radius:12px;font-size:14px;font-weight:700;margin-top:6px;box-shadow:0 6px 16px rgba(26,107,66,.25);transition:all .2s;}
+.demo-hint{font-size:10px;color:var(--gray);text-align:center;margin-top:12px;padding:8px;background:#f6f6f6;border-radius:8px;}
+
+/* HEADER */
+.h-bar{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:16px 18px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.1);}
+.h-brand{display:flex;align-items:center;gap:11px;}
+.h-ico{width:42px;height:42px;background:rgba(255,255,255,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.h-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;}
+.h-tag{font-size:10px;opacity:.85;margin-top:2px;}
+.h-actions{display:flex;align-items:center;gap:8px;}
+.cb-pill{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#4a3400;padding:7px 13px;border-radius:50px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(245,166,35,.4);}
+.icon-btn{background:rgba(255,255,255,.18);width:38px;height:38px;border-radius:12px;font-size:16px;color:#fff;}
+.m-cont{padding:14px;padding-bottom:90px;}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;border-top:1px solid var(--border);z-index:50;box-shadow:0 -4px 14px rgba(0,0,0,.05);}
+.bn-i{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 4px 11px;gap:3px;color:var(--gray);font-size:9px;font-weight:700;cursor:pointer;position:relative;}
+.bn-i span:first-child{font-size:20px;}
+.bn-i.on{color:var(--g1);}
+.bn-i.on::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:30px;height:3px;background:var(--g1);border-radius:0 0 3px 3px;}
+.bn-i em{position:absolute;top:5px;right:22%;background:var(--red);color:#fff;font-size:9px;padding:1px 6px;border-radius:50px;font-style:normal;font-weight:700;min-width:18px;text-align:center;}
+
+/* CARDS */
+.card{background:#fff;border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:12px;}
+.card-t{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:12px;}
+
+/* BANNER */
+.banner{background:linear-gradient(135deg,#1a6b42 0%,#28a05f 50%,#3dbd7a 100%);color:#fff;border-radius:18px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;}
+.banner::before{content:"💰";position:absolute;font-size:120px;right:-20px;top:50%;transform:translateY(-50%);opacity:.1;}
+.banner h2{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;margin-bottom:4px;position:relative;}
+.banner p{font-size:12px;opacity:.95;line-height:1.5;position:relative;}
+.banner .badge{display:inline-block;background:var(--gold);color:#4a3400;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:800;margin-bottom:8px;}
+
+/* QUICK SERVICES */
+.qs-section{margin-bottom:14px;}
+.qs-section-t{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;}
+.qs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.qs-i{background:#fff;border-radius:16px;padding:16px 6px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .25s;}
+.qs-i:hover{transform:translateY(-3px);box-shadow:var(--sh2);}
+.qs-i .ico-wrap{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;}
+.qs-i[data-c="1"] .ico-wrap{background:linear-gradient(135deg,#dbeeff,#a8d5ff);}
+.qs-i[data-c="2"] .ico-wrap{background:linear-gradient(135deg,#fff1d8,#ffd166);}
+.qs-i[data-c="3"] .ico-wrap{background:linear-gradient(135deg,#d4f5e3,#7eddb0);}
+.qs-i[data-c="4"] .ico-wrap{background:linear-gradient(135deg,#fde0d3,#f5a380);}
+.qs-i .qs-lbl{font-size:11px;font-weight:700;}
+
+/* CATEGORY */
+.cat-bar{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding:4px 0 6px;-webkit-overflow-scrolling:touch;}
+.cat-bar::-webkit-scrollbar{display:none;}
+.cat-chip{padding:8px 16px;border-radius:50px;background:#fff;font-size:12px;font-weight:600;color:var(--gray);white-space:nowrap;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
+.cat-chip.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(26,107,66,.25);}
+
+/* PRODUCT */
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.prod-card{background:#fff;border-radius:16px;padding:12px;box-shadow:var(--sh);position:relative;transition:all .25s;}
+.prod-card:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.prod-ico{font-size:48px;text-align:center;padding:18px 0;background:linear-gradient(135deg,var(--light),var(--soft));border-radius:13px;margin-bottom:9px;}
+.prod-name{font-size:12px;font-weight:700;margin-bottom:3px;line-height:1.3;min-height:32px;}
+.prod-price{font-family:'Sora',sans-serif;font-size:14px;font-weight:800;color:var(--g1);}
+.prod-stk{font-size:10px;color:var(--gray);margin:2px 0 8px;}
+.prod-add{width:100%;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:8px;border-radius:10px;font-size:12px;font-weight:700;box-shadow:0 3px 8px rgba(26,107,66,.2);}
+.prod-add:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;}
+.prod-badge{position:absolute;top:8px;right:8px;background:linear-gradient(135deg,var(--red),#ff6b6b);color:#fff;padding:3px 8px;border-radius:50px;font-size:9px;font-weight:800;box-shadow:0 3px 8px rgba(224,60,60,.3);}
+.prod-badge.digital{background:linear-gradient(135deg,var(--purple),#9c27b0);}
+.prod-card .ci-qty{display:flex;align-items:center;justify-content:space-between;background:var(--light);border-radius:10px;padding:4px 8px;}
+.prod-card .ci-qb{width:24px;height:24px;background:var(--g1);color:#fff;border-radius:6px;font-weight:800;font-size:14px;}
+.prod-card .ci-qv{font-size:13px;font-weight:800;color:var(--g1);}
+
+/* WALLET */
+.wallet-hero{background:linear-gradient(135deg,#4a3400 0%,#8b6a1a 40%,var(--gold) 80%,var(--gold2) 100%);color:#fff;border-radius:18px;padding:22px;margin-bottom:12px;position:relative;overflow:hidden;}
+.wallet-hero::before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.1);top:-60px;right:-40px;}
+.wallet-hero h3{font-size:11px;font-weight:600;opacity:.9;text-transform:uppercase;letter-spacing:2px;position:relative;}
+.wallet-hero .bal{font-family:'Sora',sans-serif;font-size:34px;font-weight:800;margin:4px 0;position:relative;}
+.wallet-hero .sub{font-size:11px;opacity:.9;position:relative;}
+.wallet-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;position:relative;}
+.wa-btn{background:rgba(255,255,255,.22);color:#fff;padding:10px 4px;border-radius:11px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.wa-btn span:first-child{font-size:18px;}
+.saving-card{background:linear-gradient(135deg,#0f3960 0%,#1a4d7a 50%,var(--blue) 100%);color:#fff;border-radius:18px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
+.saving-card::before{content:"🏦";position:absolute;font-size:100px;right:-15px;bottom:-25px;opacity:.1;}
+.saving-card h3{font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:2px;position:relative;}
+.saving-card .bal{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;margin:4px 0;position:relative;}
+.saving-actions{display:flex;gap:8px;margin-top:12px;position:relative;}
+.sa-btn{flex:1;background:rgba(255,255,255,.22);color:#fff;padding:9px;border-radius:10px;font-size:12px;font-weight:700;}
+
+/* CART */
+.cart-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid #f0f4f1;align-items:center;}
+.ci-ico{width:50px;height:50px;background:linear-gradient(135deg,var(--light),var(--soft));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.ci-info{flex:1;}
+.ci-name{font-size:13px;font-weight:700;}
+.ci-price{font-size:11px;color:var(--gray);margin-top:2px;}
+.ci-qty{display:flex;align-items:center;gap:6px;background:var(--light);border-radius:10px;padding:3px 6px;}
+.ci-qb{width:26px;height:26px;border-radius:7px;background:#fff;color:var(--g1);font-weight:800;font-size:14px;border:1px solid var(--border);}
+.ci-qv{min-width:22px;text-align:center;font-size:13px;font-weight:800;color:var(--g1);}
+
+.summary{background:linear-gradient(135deg,var(--soft),#fff);border-radius:14px;padding:14px;margin-top:14px;border:1px solid var(--border);}
+.sm-r{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;}
+.sm-r.tot{border-top:2px solid var(--border);margin-top:8px;padding-top:10px;font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:var(--g1);}
+.sm-r.cb{color:#a06000;font-weight:700;}
+.sm-r.wal{color:var(--blue);font-weight:700;}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;}
+.tg{position:relative;display:inline-block;width:44px;height:24px;}
+.tg input{opacity:0;width:0;height:0;}
+.tg-sl{position:absolute;inset:0;background:#ccc;border-radius:50px;cursor:pointer;transition:.3s;}
+.tg-sl:before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 2px 4px rgba(0,0,0,.2);}
+.tg input:checked + .tg-sl{background:var(--g1);}
+.tg input:checked + .tg-sl:before{transform:translateX(20px);}
+
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.pay-opt{padding:11px 8px;border:2px solid var(--border);border-radius:11px;text-align:center;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;background:#fff;}
+.pay-opt.on{border-color:var(--g1);background:linear-gradient(135deg,#edf7f1,#fff);color:var(--g1);box-shadow:0 4px 12px rgba(26,107,66,.15);}
+
+/* HISTORY */
+.hist-row{padding:13px 0;border-bottom:1px solid #f0f4f1;display:flex;justify-content:space-between;align-items:center;}
+.hist-row:last-child{border-bottom:none;}
+.hist-info{flex:1;}
+.hist-title{font-size:13px;font-weight:700;}
+.hist-date{font-size:10px;color:var(--gray);margin-top:3px;}
+.hist-amt{font-family:'Sora',sans-serif;font-weight:800;font-size:14px;}
+.hist-amt.in{color:var(--g1);}
+.hist-amt.out{color:var(--red);}
+
+/* MODAL */
+.mwrap{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);}
+.mwrap.on{display:flex;}
+.modal{background:#fff;border-radius:24px 24px 0 0;padding:24px 22px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal h3{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;margin-bottom:16px;}
+.m-close{position:absolute;top:14px;right:14px;background:#f0f0f0;width:32px;height:32px;border-radius:50%;font-size:14px;color:var(--gray);}
+
+/* BADGES */
+.bdg{display:inline-block;padding:3px 10px;border-radius:50px;font-size:10px;font-weight:800;}
+.bdg-green{background:#d4f5e3;color:#1a6b42;}
+.bdg-gold{background:#fdf3d0;color:#a06000;}
+.bdg-blue{background:#dbeeff;color:#1a6fa4;}
+.bdg-red{background:#ffe0e0;color:#c0392b;}
+.bdg-orange{background:#fdebd0;color:#a04000;}
+
+.empty{text-align:center;padding:36px 20px;color:var(--gray);font-size:12px;}
+.empty span{font-size:54px;display:block;margin-bottom:10px;opacity:.6;}
+
+/* TAB-BAR */
+.tab-bar{display:flex;background:#fff;border-radius:14px;padding:5px;margin-bottom:12px;gap:3px;box-shadow:var(--sh);}
+.tab-bar button{flex:1;padding:9px;background:transparent;border-radius:10px;font-size:11px;font-weight:700;color:var(--gray);transition:all .2s;}
+.tab-bar button.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;box-shadow:0 4px 10px rgba(26,107,66,.25);}
+
+.pawn-item{background:#fff;border-radius:13px;padding:13px;margin-bottom:9px;border-left:4px solid var(--gold);box-shadow:var(--sh);}
+.pawn-item.approved{border-color:var(--g1);}
+.pawn-item.rejected{border-color:var(--red);}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.stat-mini{background:linear-gradient(135deg,var(--soft),#fff);border-radius:13px;padding:13px;text-align:center;border:1px solid var(--border);}
+.stat-mini-val{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;}
+.stat-mini-lbl{font-size:10px;color:var(--gray);margin-top:2px;font-weight:600;}
+
+.profile-hero{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:18px;padding:24px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden;}
+.profile-hero::before{content:"";position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.08);top:-80px;left:-50px;}
+.profile-avatar{width:80px;height:80px;background:rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto 10px;border:3px solid rgba(255,255,255,.3);position:relative;}
+.profile-name{font-family:'Sora',sans-serif;font-size:18px;font-weight:800;position:relative;}
+.profile-phone{font-size:12px;opacity:.9;margin-top:3px;position:relative;}
+
+.info-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f0f4f1;}
+.info-row:last-child{border-bottom:none;}
+
+/* Widget Cashback Beranda */
+.cb-widget{background:linear-gradient(135deg,#4a3400,#8b6a1a 40%,var(--gold) 80%,var(--gold2));border-radius:18px;padding:16px 18px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden;}
+.cb-widget::before{content:"💰";position:absolute;font-size:100px;right:-15px;bottom:-20px;opacity:.12;}
+.cb-widget-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;opacity:.85;margin-bottom:4px;}
+.cb-widget-bal{font-family:'Sora',sans-serif;font-size:26px;font-weight:800;margin-bottom:10px;}
+.cb-widget-row{display:flex;gap:8px;}
+.cb-mini{flex:1;background:rgba(255,255,255,.18);border-radius:11px;padding:10px;text-align:center;backdrop-filter:blur(8px);}
+.cb-mini-val{font-family:'Sora',sans-serif;font-size:14px;font-weight:800;}
+.cb-mini-lbl{font-size:9px;opacity:.85;margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.cb-potential{background:rgba(255,255,255,.22);border-radius:11px;padding:10px 14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;}
+.cb-potential-lbl{font-size:11px;opacity:.9;}
+.cb-potential-val{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;}
+.info-lbl{font-size:12px;color:var(--gray);font-weight:600;}
+.info-val{font-size:13px;font-weight:700;}
+</style>
+</head>
+<body>
+<div id="syncStatus" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#28a05f;color:#fff;font-size:11px;font-weight:700;padding:5px 14px;align-items:center;gap:6px;justify-content:center;"></div>
+<div id="authWrap">
+  <div class="auth-box">
+    <div class="brand">
+      <div class="brand-ico" id="adminTrigger" onclick="handleAdminTap()" style="cursor:pointer;">🏪</div>
+      <h1>Warung Mang Deden</h1>
+      <p>Sembako · Dompet · Gadai · Transfer</p>
+    </div>
+    <div class="tabs">
+      <button class="tab on" onclick="aTab('login',this)">Masuk</button>
+      <button class="tab" onclick="aTab('reg',this)">Daftar Baru</button>
+    </div>
+    <div id="loginF" style="display:block;">
+      <input class="ain" id="lPhone" type="tel" inputmode="numeric" placeholder="Nomor WhatsApp">
+      <input class="ain" id="lPin" type="number" inputmode="numeric" placeholder="PIN 6 Digit" style="letter-spacing:6px;font-size:22px;text-align:center;font-weight:700;-webkit-text-security:disc;font-family:'Sora',sans-serif;" oninput="if(this.value.length>6)this.value=this.value.slice(0,6)">
+      <button class="btn-prim" onclick="doLogin()">🔐 Masuk</button>
+      <p class="demo-hint">Demo: 081234567890 / PIN 123456</p>
+    </div>
+    <div id="regF" style="display:none;">
+      <input class="ain" id="rName" type="text" placeholder="Nama Lengkap">
+      <input class="ain" id="rPhone" type="tel" inputmode="numeric" placeholder="Nomor WhatsApp">
+      <input class="ain" id="rAddr" type="text" placeholder="Alamat (untuk antar)">
+      <input class="ain" id="rPin" type="number" inputmode="numeric" placeholder="Buat PIN 6 Digit" style="letter-spacing:6px;font-size:22px;text-align:center;font-weight:700;-webkit-text-security:disc;font-family:'Sora',sans-serif;" oninput="if(this.value.length>6)this.value=this.value.slice(0,6)">
+      <button class="btn-prim" onclick="doReg()">✨ Daftar</button>
+    </div>
+  </div>
+</div>
+
+<div id="mainApp" style="display:none;">
+  <header class="h-bar">
+    <div class="h-brand">
+      <div class="h-ico">🏪</div>
+      <div>
+        <div class="h-name">Warung Mang Deden</div>
+        <div class="h-tag" id="hdrGreet">Selamat datang!</div>
+      </div>
+    </div>
+    <div class="h-actions">
+      <div class="cb-pill" onclick="goPage('wallet')">💰 <span id="hdrCB">Rp 0</span></div>
+      <button class="icon-btn" onclick="doLogout2()">🚪</button>
+    </div>
+  </header>
+
+  <main class="m-cont" id="mPage"></main>
+
+  <nav class="bottom-nav">
+    <div class="bn-i on" data-page="home" onclick="goPage('home',this)"><span>🏠</span><span>Belanja</span></div>
+    <div class="bn-i" data-page="wallet" onclick="goPage('wallet',this)"><span>💰</span><span>Dompet</span></div>
+    <div class="bn-i" data-page="cart" onclick="goPage('cart',this)"><span>🛒</span><span>Keranjang <em id="cartCount" style="display:none;">0</em></span></div>
+    <div class="bn-i" data-page="history" onclick="goPage('history',this)"><span>📋</span><span>Riwayat</span></div>
+    <div class="bn-i" data-page="gallery" onclick="goPage('gallery',this)"><span>🖼️</span><span>Galeri</span></div>
+    <div class="bn-i" data-page="profile" onclick="goPage('profile',this)"><span>👤</span><span>Profil</span></div>
+  </nav>
+</div>
+
+<div class="mwrap" id="modal"><div class="modal" id="modalBody"></div></div>
+<div class="mwrap" id="modal"><div class="modal" id="modalBody"></div></div>
+<script>
+// ═══════════════════════════════════════
+//          WARUNG (PELANGGAN) SCRIPT
+// ═══════════════════════════════════════
+
+const W_USERS = 'wmd_users_v2';
+const W_PRODS = 'wmd_products_v2';
+const W_SETS  = 'wmd_settings_v2';
+const TF_FEE = 2500;
+
+let CU = null;
+let cart = {};
+let curCat = 'semua';
+let useWalletPay = false;
+let selPayMethod = 'dana';
+let selShipMethod = 'pickup';
+let selWdMethod = 'dana';
+let selTfMethod = 'bca';
+let selPawType = 'gadai';
+let histTab = 'all';
+
+const fmt = n => 'Rp ' + Math.round(Math.abs(n||0)).toLocaleString('id-ID');
+const today = () => new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+const oid = () => 'MD' + Date.now().toString().slice(-6);
+const wid = () => 'WD' + Date.now().toString().slice(-6);
+const tid = () => 'TF' + Date.now().toString().slice(-6);
+const sid = () => 'SV' + Date.now().toString().slice(-6);
+const pid = () => 'GD' + Date.now().toString().slice(-6);
+
+const DEFAULT_PRODS = [
+  {id:'p1',name:'Beras 5kg Premium',icon:'🌾',price:68000,stock:50,unit:'sak',cat:'Sembako',badge:'Laris',active:true,cbRp:250},
+  {id:'p2',name:'Minyak Goreng 2L',icon:'🫙',price:32000,stock:30,unit:'botol',cat:'Sembako',badge:'',active:true,cbRp:200},
+  {id:'p3',name:'Telur 1kg',icon:'🥚',price:28000,stock:40,unit:'kg',cat:'Sembako',badge:'',active:true,cbRp:150},
+  {id:'p4',name:'Gula Pasir 1kg',icon:'🍬',price:15000,stock:25,unit:'kg',cat:'Sembako',badge:'',active:true,cbRp:100},
+  {id:'p5',name:'Aqua 600ml',icon:'💧',price:3500,stock:100,unit:'botol',cat:'Minuman',badge:'',active:true,cbRp:50},
+  {id:'p6',name:'Kopi Kapal Api',icon:'☕',price:2000,stock:200,unit:'sachet',cat:'Minuman',badge:'',active:true,cbRp:50},
+  {id:'p7',name:'Indomie Goreng',icon:'🍜',price:3500,stock:200,unit:'pcs',cat:'Snack',badge:'Hits',active:true,cbRp:300},
+  {id:'p8',name:'Indomie Soto',icon:'🍜',price:3500,stock:150,unit:'pcs',cat:'Snack',badge:'',active:true,cbRp:300},
+  {id:'p9',name:'Sabun Mandi',icon:'🧼',price:5000,stock:60,unit:'pcs',cat:'Kebersihan',badge:'',active:true,cbRp:50},
+  {id:'p10',name:'Shampo Sachet',icon:'🧴',price:1500,stock:200,unit:'sachet',cat:'Kebersihan',badge:'',active:true,cbRp:0},
+  {id:'p11',name:'Lipstik',icon:'💄',price:25000,stock:20,unit:'pcs',cat:'Kosmetik',badge:'',active:true,cbRp:500},
+  {id:'p12',name:'Bedak',icon:'🪞',price:35000,stock:15,unit:'pcs',cat:'Kosmetik',badge:'',active:true,cbRp:500},
+  {id:'p13',name:'Pelembab Wajah',icon:'🧴',price:28000,stock:15,unit:'pcs',cat:'Kosmetik',badge:'',active:true,cbRp:500},
+  {id:'p14',name:'Masker Wajah',icon:'✨',price:5000,stock:50,unit:'pcs',cat:'Kosmetik',badge:'Hits',active:true,cbRp:200},
+  {id:'p15',name:'Pulsa 10.000',icon:'📱',price:11500,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p16',name:'Pulsa 20.000',icon:'📱',price:21500,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p17',name:'Pulsa 50.000',icon:'📱',price:51500,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p18',name:'Token PLN 20.000',icon:'⚡',price:20000,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p19',name:'Token PLN 50.000',icon:'⚡',price:50000,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p20',name:'Token PLN 100.000',icon:'⚡',price:100000,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p21',name:'Paket Data 1GB',icon:'📶',price:15000,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p22',name:'Paket Data 5GB',icon:'📶',price:35000,stock:999,unit:'pcs',cat:'Pulsa & Token',badge:'Digital',active:true,cbRp:0},
+  {id:'p23',name:'Servis HP',icon:'📱',price:50000,stock:999,unit:'jasa',cat:'Jasa',badge:'Jasa',active:true,cbRp:0},
+  {id:'p24',name:'Servis AC',icon:'❄️',price:150000,stock:999,unit:'jasa',cat:'Jasa',badge:'Jasa',active:true,cbRp:0},
+  {id:'p25',name:'Jasa Perbaikan Rumah',icon:'🔧',price:100000,stock:999,unit:'jasa',cat:'Jasa',badge:'Jasa',active:true,cbRp:0},
+];
+
+const loadUsers = () => { try { return JSON.parse(localStorage.getItem(W_USERS)||'{}'); } catch(e){ return {}; } };
+const saveUsers = u => { try { localStorage.setItem(W_USERS, JSON.stringify(u)); } catch(e){} scheduleCloudPush(); };
+const loadProds = () => { try { const d = JSON.parse(localStorage.getItem(W_PRODS)||'null'); return d || DEFAULT_PRODS; } catch(e){ return DEFAULT_PRODS; } };
+const saveProds = p => { try { localStorage.setItem(W_PRODS, JSON.stringify(p)); } catch(e){} scheduleCloudPush(); };
+const loadSets = () => { try { const d = JSON.parse(localStorage.getItem(W_SETS)||'null'); return d ? {...defSets(),...d} : defSets(); } catch(e){ return defSets(); } };
+const saveSets = s => { try { localStorage.setItem(W_SETS, JSON.stringify(s)); } catch(e){} scheduleCloudPush(); };
+const defSets = () => ({ cbEnabled:true, cbRate:5, cbBonus:2, cbThresh:500000, minWd:10000, storeOpen:true, storeName:'Warung Mang Deden', waNum:'087735205340', jasaGadai:5, jasaTitip:10, jasaSimpan:2 });
+
+const getU = () => loadUsers()[CU];
+const updU = fn => { const u = loadUsers(); if (u[CU]) { fn(u[CU]); saveUsers(u); } };
+const cbRate = u => { const s = loadSets(); if (!s.cbEnabled) return 0; return s.cbRate/100 + ((u?.monthSpend||0) >= s.cbThresh ? s.cbBonus/100 : 0); };
+
+(function seedDemo() {
+  const u = loadUsers();
+  if (!u['081234567890']) {
+    u['081234567890'] = {
+      name: 'Ibu Sari', phone: '081234567890', pin: '123456',
+      address: 'Jl. Melati No.5 RT03',
+      cbBalance: 47500, savingBalance: 100000,
+      monthSpend: 350000, monthEarned: 17500, totalSpend: 1250000,
+      txHistory: [
+        { id:'MD001', type:'order', date:today(), desc:'Belanja sembako', amount:-163000 },
+        { id:'CB001', type:'cb',    date:today(), desc:'Cashback belanja', amount:+8150 },
+      ],
+      wdHistory: [], tfHistory: [], svHistory: [], pawnItems: []
+    };
+    saveUsers(u);
+  }
+})();
+
+function aTab(t, el) {
+  document.querySelectorAll('#authWrap .tab').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('loginF').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('regF').style.display   = t === 'reg'   ? 'block' : 'none';
+}
+
+function doLogin() {
+  const ph = document.getElementById('lPhone').value.trim();
+  const pin = String(document.getElementById('lPin').value);
+  if (!ph || !pin) { alert('Isi nomor WA dan PIN!'); return; }
+  const u = loadUsers();
+  if (u[ph] && String(u[ph].pin) === pin) {
+    CU = ph;
+    enterApp();
+  } else {
+    alert('❌ Nomor WA atau PIN salah!\nDemo: 081234567890 / PIN 123456');
+  }
+}
+
+function doReg() {
+  const name = document.getElementById('rName').value.trim();
+  const ph = document.getElementById('rPhone').value.trim();
+  const addr = document.getElementById('rAddr').value.trim();
+  const pin = String(document.getElementById('rPin').value);
+  if (!name || !ph || !pin) { alert('Lengkapi data daftar!'); return; }
+  if (pin.length !== 6 || isNaN(pin)) { alert('PIN harus 6 digit angka!'); return; }
+  const u = loadUsers();
+  if (u[ph]) { alert('Nomor WA sudah terdaftar!'); return; }
+  u[ph] = {
+    name, phone:ph, pin:String(pin), address:addr,
+    cbBalance:0, savingBalance:0,
+    monthSpend:0, monthEarned:0, totalSpend:0,
+    txHistory:[], wdHistory:[], tfHistory:[], svHistory:[], pawnItems:[]
+  };
+  saveUsers(u);
+  CU = ph;
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('authWrap').style.display = 'none';
+  initCloudSync();
+  document.getElementById('mainApp').style.display = 'block';
+  const u = getU();
+  if (u) document.getElementById('hdrGreet').textContent = 'Halo, ' + u.name + '!';
+  goPage('home');
+}
+
+function doLogout2() {
+  if (!confirm('Keluar dari akun?')) return;
+  CU = null; cart = {};
+  document.getElementById('authWrap').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('lPhone').value = '';
+  document.getElementById('lPin').value = '';
+}
+
+function goPage(p, el) {
+  document.querySelectorAll('.bn-i').forEach(x => x.classList.remove('on'));
+  if (el) el.classList.add('on');
+  else {
+    const navEl = document.querySelector('.bn-i[data-page="'+p+'"]');
+    if (navEl) navEl.classList.add('on');
+  }
+  updHdr();
+  autoPullIfNeeded();
+  if (p==='home')    renderHome();
+  if (p==='wallet')  renderWallet();
+  if (p==='cart')    renderCart();
+  if (p==='history') renderHistory();
+  if (p==='profile') renderProfile();
+  if (p==='gallery')  renderGallery();
+}
+
+function updHdr() {
+  const u = getU();
+  if (u) document.getElementById('hdrCB').textContent = fmt(u.cbBalance||0);
+  const total = Object.values(cart).reduce((a,b)=>a+b.qty,0);
+  const cc = document.getElementById('cartCount');
+  if (total > 0) { cc.textContent = total; cc.style.display='inline-block'; }
+  else cc.style.display = 'none';
+}
+
+  function getStoreCats() {
+  try {
+    const d = JSON.parse(localStorage.getItem('wmd_cats_v1')||'null');
+    const base = d&&d.length ? d : ['Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
+    return ['semua',...base];
+  } catch(e) {
+    return ['semua','Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
+  }
+}
+function renderHome() {
+  const cats = getStoreCats();
+  function getStoreCats() {
+  try {
+    const d = JSON.parse(localStorage.getItem('wmd_cats_v1')||'null');
+    const base = d&&d.length ? d : ['Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
+    return ['semua',...base];
+  } catch(e) {
+    return ['semua','Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
+  }
+}
+  
+  document.getElementById('mPage').innerHTML = `
+    <div class="banner" id="homeBanner">
+      <span class="badge">PROMO HARI INI</span>
+      <h2 id="bannerTitle">💰 Belanja Dapat Cashback!</h2>
+      <p id="bannerDesc">Setiap produk punya cashback berbeda. Lihat total cashback Anda saat belanja.</p>
+    </div>
+    <div class="cb-widget" id="cbWidget" style="display:none;"></div>
+    <div id="etalaseSection"></div>
+    <div class="qs-section">
+      <div class="qs-section-t">⚡ Layanan Cepat</div>
+      <div class="qs-grid">
+        <div class="qs-i" data-c="1" onclick="openTransfer()">
+          <div class="ico-wrap">↗️</div>
+          <div class="qs-lbl">Transfer</div>
+        </div>
+        <div class="qs-i" data-c="2" onclick="openWithdraw()">
+          <div class="ico-wrap">💸</div>
+          <div class="qs-lbl">Tarik Tunai</div>
+        </div>
+        <div class="qs-i" data-c="3" onclick="openSaving()">
+          <div class="ico-wrap">🏦</div>
+          <div class="qs-lbl">Nabung</div>
+        </div>
+        <div class="qs-i" data-c="4" onclick="openPawn()">
+          <div class="ico-wrap">🏷️</div>
+          <div class="qs-lbl">Gadai/Jual</div>
+        </div>
+      </div>
+    </div>
+    <div class="qs-section-t" style="margin-top:18px;">🛒 Produk Tersedia</div>
+    <div class="cat-bar">
+      ${cats.map(c => `<div class="cat-chip ${c===curCat?'on':''}" onclick="setCat('${c}')">${c==='semua'?'Semua':c}</div>`).join('')}
+    </div>
+    <div class="prod-grid" id="prodGrid"></div>
+  `;
+  renderProds();
+  renderCbWidget();
+  // Render etalase titip jual
+  const etalaseItems = renderEtalase();
+  const etEl = document.getElementById('etalaseSection');
+  if (etEl && etalaseItems.length > 0) {
+    etEl.innerHTML = `
+      <div style="margin-bottom:14px;">
+        <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;">🏪 Etalase Titip Jual</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
+          \${etalaseItems.map(item => \`
+            <div class="prod-card" style="border:2px solid var(--gold);">
+              <div class="prod-ico" style="padding:0;overflow:hidden;background:linear-gradient(135deg,#5c4400,var(--gold));">
+                \${(item.photos&&item.photos[0])
+                  ? \`<img src="\${item.photos[0]}" style="width:100%;height:110px;object-fit:cover;border-radius:13px;">\`
+                  : \`<div style="font-size:48px;text-align:center;padding:18px 0;">📦</div>\`}
+              </div>
+              <div class="prod-name">\${item.item}</div>
+              <div style="font-size:10px;color:var(--gray);margin-bottom:4px;">Kondisi: \${item.cond}</div>
+              <div class="prod-price" style="color:var(--gold);">\${item.loanAmt>0?fmt(item.loanAmt):'Harga Nego'}</div>
+              <button class="prod-add" style="background:linear-gradient(135deg,#5c4400,var(--gold));margin-top:6px;"
+                onclick="hubungiPenjual('\${item.phone}','\${item.item}','\${item.seller}')">
+                💬 Hubungi
+              </button>
+            </div>
+          \`).join('')}
+        </div>
+      </div>
+    `;
+  } else if (etEl) {
+    etEl.innerHTML = '';
+  }
+  // Update banner dari settings
+  const _s = loadSets();
+  const _bt = document.getElementById('bannerTitle');
+  const _bd = document.getElementById('bannerDesc');
+  if (_bt && _s.cbEnabled) {
+    _bt.textContent = '💰 Belanja Dapat Cashback!';
+    _bd.textContent = 'Tiap produk punya cashback berbeda. Total cashback tampil di bawah saat Anda berbelanja.';
+  } else if (_bt) {
+    _bt.textContent = '🛒 Selamat Berbelanja!';
+    _bd.textContent = 'Produk segar & lengkap setiap hari di Warung Mang Deden.';
+  }
+}
+function setCat(c) { curCat = c; renderHome(); }
+
+function renderEtalase() {
+  // Ambil dari shared pawn storage (lebih reliable setelah admin approve)
+  let allPawns = [];
+  try { allPawns = JSON.parse(localStorage.getItem('wmd_pawn_v1')||'[]'); } catch(e) {}
+  const items = allPawns.filter(p => p.type === 'jual' && p.status === 'approved');
+  // Fallback: cek juga dari user.pawnItems
+  if (items.length === 0) {
+    const allUsers = loadUsers();
+    Object.values(allUsers).forEach(u => {
+      (u.pawnItems||[]).forEach(p => {
+        if (p.type === 'jual' && p.status === 'approved') {
+          items.push({...p, seller: u.name||p.cust, phone: u.phone||p.phone});
+        }
+      });
+    });
+  }
+  return items;
+}
+
+function calcCartCb() {
+  const s = loadSets();
+  if (!s.cbEnabled) return 0;
+  const items = Object.values(cart);
+  if (!items.length) return 0;
+  const subtotal = items.reduce((a,b) => a + b.price * b.qty, 0);
+  const u = getU();
+  const walMax = useWalletPay ? Math.min(u?.cbBalance||0, subtotal) : 0;
+  const payFrac = subtotal > 0 ? (subtotal - walMax) / subtotal : 1;
+  return items.reduce((a, i) => a + Math.round((i.cbRp||0) * i.qty * payFrac), 0);
+}
+
+function renderCbWidget() {
+  const el = document.getElementById('cbWidget');
+  if (!el) return;
+  const u = getU();
+  const s = loadSets();
+  if (!u || !s.cbEnabled) { el.style.display='none'; return; }
+  const potential = calcCartCb();
+  const cartCount = Object.values(cart).reduce((a,b)=>a+b.qty, 0);
+  el.innerHTML = `
+    <div class="cb-widget-title">💰 Cashback Saya</div>
+    <div class="cb-widget-bal">${fmt(u.cbBalance||0)}</div>
+    <div class="cb-widget-row">
+      <div class="cb-mini">
+        <div class="cb-mini-val">${fmt(u.monthEarned||0)}</div>
+        <div class="cb-mini-lbl">Earned Bulan Ini</div>
+      </div>
+      <div class="cb-mini">
+        <div class="cb-mini-val">${fmt(u.monthSpend||0)}</div>
+        <div class="cb-mini-lbl">Belanja Bulan Ini</div>
+      </div>
+    </div>
+    ${cartCount > 0 ? `
+    <div class="cb-potential">
+      <div class="cb-potential-lbl">🛒 Potensi dari keranjang (${cartCount} item)</div>
+      <div class="cb-potential-val">+${fmt(potential)}</div>
+    </div>` : ''}
+  `;
+  el.style.display = 'block';
+}
+function renderProds() {
+  const prods = loadProds().filter(p => p.active && (curCat==='semua' || p.cat===curCat));
+  document.getElementById('prodGrid').innerHTML = prods.length ? prods.map(p => {
+    const qty = cart[p.id]?.qty || 0;
+    const outStock = p.stock !== 999 && p.stock <= 0;
+    const badgeCls = p.cat === 'Digital' ? 'digital' : '';
+    return `
+      <div class="prod-card">
+        ${p.badge?`<span class="prod-badge ${badgeCls}">${p.badge}</span>`:''}
+        <div class="prod-ico" style="padding:0;overflow:hidden;background:${p.cat==='Pulsa & Token'?'linear-gradient(135deg,#1a4d7a,#1a6fa4)':p.cat==='Jasa'?'linear-gradient(135deg,#4a3400,#a06000)':p.cat==='Kosmetik'?'linear-gradient(135deg,#6f1a5e,#b03090)':'var(--light)'};">
+          ${p.img
+            ? `<img src="${p.img}" style="width:100%;height:110px;object-fit:cover;display:block;border-radius:13px;">`
+            : (p.cat==='Pulsa & Token'||p.cat==='Jasa'||p.cat==='Kosmetik')
+              ? `<div style="font-size:42px;text-align:center;padding:20px 0;">${p.icon}</div>`
+              : `<div style="font-size:48px;text-align:center;padding:18px 0;">${p.icon}</div>`
+          }
+        </div>
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-price">${p.cat==='Jasa'?'Mulai '+fmt(p.price):p.price>0?fmt(p.price):'Hubungi Kami'}</div>
+        <div class="prod-stk">Stok: ${p.stock===999?'∞':p.stock} ${p.unit}</div>
+        ${qty>0?`<div class="ci-qty">
+          <button class="ci-qb" onclick="addCart('${p.id}',-1)">−</button>
+          <span class="ci-qv">${qty}</span>
+          <button class="ci-qb" onclick="addCart('${p.id}',1)">+</button>
+        </div>`:`<button class="prod-add" ${outStock?'disabled':''} onclick="addCart('${p.id}',1)">${outStock?'Habis':'+ Keranjang'}</button>`}
+      </div>
+    `;
+  }).join('') : '<div class="empty" style="grid-column:1/-1;"><span>📦</span>Produk kosong</div>';
+}
+function addCart(id, delta) {
+  const p = loadProds().find(x=>x.id===id);
+  if (!p) return;
+  if (!cart[id]) cart[id] = { id, name:p.name, price:p.price, icon:p.icon, img:p.img||'', qty:0, cbRp:p.cbRp||0 };
+  cart[id].qty = Math.max(0, cart[id].qty + delta);
+  if (cart[id].qty === 0) delete cart[id];
+  if (p.stock !== 999 && cart[id] && cart[id].qty > p.stock) {
+    cart[id].qty = p.stock;
+    alert('Stok ' + p.name + ' hanya ' + p.stock);
+  }
+  renderProds();
+  updHdr();
+  renderCbWidget();
+}
+
+function renderWallet() {
+  const u = getU(); if (!u) return;
+  document.getElementById('mPage').innerHTML = `
+    <div class="wallet-hero">
+      <h3>💰 Dompet Cashback</h3>
+      <div class="bal">${fmt(u.cbBalance||0)}</div>
+      <div class="sub">Belanja bulan ini: ${fmt(u.monthSpend||0)}</div>
+      <div class="wallet-actions">
+        <button class="wa-btn" onclick="openWithdraw()"><span>💸</span>Tarik</button>
+        <button class="wa-btn" onclick="openSaving()"><span>🏦</span>Nabung</button>
+        <button class="wa-btn" onclick="openTransfer()"><span>↗️</span>Transfer</button>
+        <button class="wa-btn" onclick="openPawn()"><span>🏷️</span>Gadai</button>
+      </div>
+    </div>
+    <div class="saving-card">
+      <h3>🏦 Tabungan Saya</h3>
+      <div class="bal">${fmt(u.savingBalance||0)}</div>
+      <div class="saving-actions">
+        <button class="sa-btn" onclick="openSaving('in')">+ Setor</button>
+        <button class="sa-btn" onclick="openSaving('out')">− Tarik</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">🏷️ Gadai / Jual Saya</div>
+      ${(u.pawnItems||[]).length === 0 ? '<div class="empty"><span>📦</span>Belum ada barang gadai/jual<br><button class="btn-prim" style="margin-top:10px;max-width:220px;" onclick="openPawn()">+ Ajukan Sekarang</button></div>' :
+        (u.pawnItems||[]).map(p => `
+          <div class="pawn-item ${p.status}">
+            <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;">
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:700;">${p.item}</div>
+                <div style="font-size:10px;color:var(--gray);margin-top:3px;">${p.date} · ${p.type==='gadai'?'🏷️ Gadai':'🏪 Titip Jual'} · Est. ${fmt(p.est)}</div>
+              </div>
+              <span class="bdg ${p.status==='approved'?'bdg-green':p.status==='rejected'?'bdg-red':'bdg-orange'}">${p.status==='approved'?'Disetujui':p.status==='rejected'?'Ditolak':'Review'}</span>
+            </div>
+            ${p.status==='approved'&&p.loanAmt>0?`<div style="font-size:12px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f4f1;">💰 Dana cair: <strong style="color:var(--g1);">${fmt(p.loanAmt)}</strong></div>`:''}
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+
+function renderCart() {
+  const items = Object.values(cart);
+  if (items.length === 0) {
+    document.getElementById('mPage').innerHTML = '<div class="empty"><span>🛒</span>Keranjang kosong<br><button class="btn-prim" style="margin-top:14px;max-width:220px;" onclick="goPage(\'home\')">Mulai Belanja</button></div>';
+    return;
+  }
+  const u = getU();
+  const s = loadSets();
+  const subtotal = items.reduce((a,b)=>a+b.price*b.qty, 0);
+  // Hitung cashback akumulasi per item (berdasarkan cbRate tiap produk)
+  const calcItemCb = (item, payFraction) => {
+    if (!s.cbEnabled) return 0;
+    return Math.round((item.cbRp||0) * item.qty * payFraction);
+  };
+  const walMax = useWalletPay ? Math.min(u.cbBalance||0, subtotal) : 0;
+  const toPay = subtotal - walMax;
+  const payFraction = subtotal > 0 ? toPay / subtotal : 1;
+  const cb = s.cbEnabled ? items.reduce((a,i) => a + calcItemCb(i, payFraction), 0) : 0;
+
+  document.getElementById('mPage').innerHTML = `
+    <div class="card">
+      <div class="card-t">🛒 Keranjang Belanja</div>
+      ${items.map(i => {
+        const iCb = s.cbEnabled ? calcItemCb(i, payFraction) : 0;
+        return `
+        <div class="cart-item">
+          <div class="ci-ico" style="overflow:hidden;padding:0;">
+        ${i.img
+          ? `<img src="${i.img}" style="width:50px;height:50px;object-fit:cover;border-radius:12px;">`
+          : `<div style="width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(135deg,var(--light),var(--soft));border-radius:12px;">${i.icon}</div>`
+        }
+      </div>
+          <div class="ci-info">
+            <div class="ci-name">${i.name}</div>
+            <div class="ci-price">${fmt(i.price)} × ${i.qty} = <strong>${fmt(i.price*i.qty)}</strong></div>
+          </div>
+          <div class="ci-qty">
+            <button class="ci-qb" onclick="addCart('${i.id}',-1)">−</button>
+            <span class="ci-qv">${i.qty}</span>
+            <button class="ci-qb" onclick="addCart('${i.id}',1)">+</button>
+          </div>
+        </div>
+      `}).join('')}
+    </div>
+    <div class="card">
+      <div class="toggle-row">
+        <div>
+          <div style="font-size:13px;font-weight:700;">💰 Bayar pakai Cashback</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:2px;">Saldo: ${fmt(u.cbBalance||0)}</div>
+        </div>
+        <label class="tg"><input type="checkbox" ${useWalletPay?'checked':''} onchange="toggleWalPay(this.checked)"><span class="tg-sl"></span></label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">💳 Metode Pembayaran</div>
+      <div class="pay-grid">
+        <div class="pay-opt on" data-pay="dana" onclick="selPay('dana',this)">💙 DANA</div>
+        <div class="pay-opt" data-pay="shopeepay" onclick="selPay('shopeepay',this)">🛒 ShopeePay</div>
+        <div class="pay-opt" data-pay="bca" onclick="selPay('bca',this)">🏦 BCA</div>
+        <div class="pay-opt" data-pay="cash" onclick="selPay('cash',this)">💵 Tunai</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">🚚 Metode Pengiriman</div>
+      <div class="pay-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="pay-opt on" data-ship="pickup" onclick="selShip('pickup',this)">🏪 Ambil Sendiri<br><span style="font-size:10px;color:var(--g1);">Gratis</span></div>
+        <div class="pay-opt" data-ship="cod" onclick="selShip('cod',this)">🛵 Antar COD<br><span style="font-size:10px;color:var(--gray);">Jarak dekat</span></div>
+        <div class="pay-opt" data-ship="ojol" onclick="selShip('ojol',this)">🛵 Ojek Online<br><span style="font-size:10px;color:var(--gray);">Ongkir sesuai app</span></div>
+        <div class="pay-opt" data-ship="ekspedisi" onclick="selShip('ekspedisi',this)">📦 Ekspedisi<br><span style="font-size:10px;color:var(--gray);">JNE/J&T/SiCepat</span></div>
+      </div>
+    </div>
+    <div class="summary">
+      <div class="sm-r"><span>Subtotal</span><span>${fmt(subtotal)}</span></div>
+      ${s.cbEnabled?`<div class="sm-r cb"><span>💰 Total Cashback (per barang${walMax>0?', bagian tunai':''})</span><span>${cb>0?'+'+fmt(cb):'—'}</span></div>`:''}
+      ${walMax>0?`<div class="sm-r wal"><span>💳 Bayar Dompet</span><span>−${fmt(walMax)}</span></div>`:''}
+      <div class="sm-r tot"><span>Total Bayar</span><span>${fmt(toPay)}</span></div>
+    </div>
+    <button class="btn-prim" onclick="checkout()" style="margin-top:14px;">✅ Pesan Sekarang</button>
+  `;
+}
+function toggleWalPay(v) { useWalletPay = v; renderCart(); }
+function selPay(p, el) {
+  selPayMethod = p;
+  document.querySelectorAll('.pay-opt[data-pay]').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+}
+function selShip(m, el) {
+  selShipMethod = m;
+  document.querySelectorAll('.pay-opt[data-ship]').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+}
+function checkout() {
+  const u = getU(); const s = loadSets();
+  const items = Object.values(cart);
+  if (items.length === 0) return;
+  const subtotal = items.reduce((a,b)=>a+b.price*b.qty, 0);
+  // Hitung cashback akumulasi per item (berdasarkan cbRate tiap produk)
+  const calcItemCb = (item, payFraction) => {
+    if (!s.cbEnabled) return 0;
+    return Math.round((item.cbRp||0) * item.qty * payFraction);
+  };
+  const walMax = useWalletPay ? Math.min(u.cbBalance||0, subtotal) : 0;
+  const toPay = subtotal - walMax;
+  const payFraction = subtotal > 0 ? toPay / subtotal : 1;
+  const cb = s.cbEnabled ? items.reduce((a,i) => a + calcItemCb(i, payFraction), 0) : 0;
+  const ordId = oid();
+  const payNames = {dana:'DANA',shopeepay:'ShopeePay',bca:'Transfer BCA',cash:'Tunai (COD)'};
+
+  updU(uu => {
+    if (walMax > 0) uu.cbBalance = Math.max(0, (uu.cbBalance||0) - walMax);
+    if (cb > 0) {
+      uu.cbBalance = (uu.cbBalance||0) + cb;
+      uu.monthEarned = (uu.monthEarned||0) + cb;
+    }
+    uu.monthSpend = (uu.monthSpend||0) + subtotal;
+    uu.totalSpend = (uu.totalSpend||0) + subtotal;
+    if (!uu.txHistory) uu.txHistory = [];
+    uu.txHistory.unshift({ id:ordId, type:'order', date:today(), desc:'Belanja ('+items.length+' item)', amount:-toPay });
+    if (cb > 0) uu.txHistory.unshift({ id:'CB'+Date.now(), type:'cb', date:today(), desc:'Cashback #'+ordId, amount:cb });
+  });
+
+  const prods = loadProds();
+  items.forEach(i => {
+    const p = prods.find(x=>x.id===i.id);
+    if (p && p.stock !== 999) p.stock = Math.max(0, p.stock - i.qty);
+  });
+  saveProds(prods);
+
+  let msg = `🛒 *PESANAN BARU — Warung Mang Deden*\n\n👤 ${u.name}\n📞 ${u.phone}\n📍 ${u.address||'-'}\n\n*Belanja:*\n`;
+  items.forEach(i => {
+    const iCbVal = s.cbEnabled ? Math.round((i.cbRp||0) * i.qty * payFraction) : 0;
+    msg += `• ${i.name} ×${i.qty} = ${fmt(i.price*i.qty)}${iCbVal>0?' (+CB '+fmt(iCbVal)+')':''}\n`;
+  });
+  msg += `\n💵 Total: ${fmt(toPay)}\n💳 Metode: ${payNames[selPayMethod]}\n`;
+  if (cb > 0) msg += `🎁 Cashback: +${fmt(cb)}${walMax>0?' (dari bagian tunai)':''}\n`;
+  if (walMax > 0) msg += `💳 Potong Dompet: ${fmt(walMax)}\n`;
+  const shipNames = {'pickup':'Ambil Sendiri','cod':'Antar COD','ojol':'Ojek Online','ekspedisi':'Ekspedisi'};
+  msg += `🚚 Pengiriman: ${shipNames[selShipMethod]||selShipMethod}\n📦 No. Pesanan: #${ordId}`;
+
+  // Simpan pesanan ke localStorage agar admin bisa lihat
+  try {
+    var allOrders = JSON.parse(localStorage.getItem('wmd_orders_v1')||'[]');
+    var itemsStr = items.map(i => i.name+' ×'+i.qty).join(', ');
+    allOrders.unshift({
+      id: ordId,
+      cust: u.name,
+      phone: u.phone,
+      address: u.address||'-',
+      items: itemsStr,
+      itemsDetail: items.map(i=>({name:i.name,qty:i.qty,price:i.price,subtotal:i.price*i.qty})),
+      subtotal: subtotal,
+      walPay: walMax,
+      total: toPay,
+      cb: cb,
+      pay: payNames[selPayMethod],
+      status: 'baru',
+      date: today(),
+      ts: Date.now()
+    });
+    localStorage.setItem('wmd_orders_v1', JSON.stringify(allOrders)); scheduleCloudPush();
+  } catch(e) {}
+
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(msg));
+  cart = {};
+  useWalletPay = false;
+  alert('✅ Pesanan terkirim!\nNo. Pesanan: #'+ordId+(cb>0?'\n🎁 Cashback +'+fmt(cb):''));
+  goPage('home');
+}
+
+function renderHistory() {
+  document.getElementById('mPage').innerHTML = `
+    <div class="tab-bar">
+      <button class="${histTab==='all'?'on':''}" onclick="setHistTab('all')">📋 Semua</button>
+      <button class="${histTab==='wd'?'on':''}" onclick="setHistTab('wd')">💸 Tarik</button>
+      <button class="${histTab==='tf'?'on':''}" onclick="setHistTab('tf')">↗️ Transfer</button>
+      <button class="${histTab==='sv'?'on':''}" onclick="setHistTab('sv')">🏦 Nabung</button>
+    </div>
+    <div class="card" id="histList"></div>
+  `;
+  renderHistList();
+}
+function setHistTab(t) { histTab = t; renderHistory(); }
+function renderHistList() {
+  const u = getU();
+  let list = [];
+  if (histTab==='all') list = (u.txHistory||[]);
+  if (histTab==='wd')  list = (u.wdHistory||[]).map(w => ({...w, desc:'Tarik ' + w.method + (w.isFull?' (Semua)':''), amount:-w.amount}));
+  if (histTab==='tf')  list = (u.tfHistory||[]).map(t => ({...t, desc:'Transfer ke ' + t.dest, amount:-(t.amount+t.fee)}));
+  if (histTab==='sv')  list = (u.svHistory||[]);
+  document.getElementById('histList').innerHTML = list.length ? list.map(h => `
+    <div class="hist-row">
+      <div class="hist-info">
+        <div class="hist-title">${h.desc}</div>
+        <div class="hist-date">${h.date} · ${h.id||''}</div>
+      </div>
+      <div class="hist-amt ${h.amount>=0?'in':'out'}">${h.amount>=0?'+':''}${fmt(h.amount)}</div>
+    </div>
+  `).join('') : '<div class="empty"><span>📭</span>Belum ada riwayat</div>';
+}
+
+function renderProfile() {
+  const u = getU(); if (!u) return;
+  document.getElementById('mPage').innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name">${u.name}</div>
+      <div class="profile-phone">${u.phone}</div>
+    </div>
+    <div class="card">
+      <div class="card-t">📊 Statistik Belanja</div>
+      <div class="stats-grid">
+        <div class="stat-mini">
+          <div class="stat-mini-val" style="color:var(--g1);">${fmt(u.totalSpend||0)}</div>
+          <div class="stat-mini-lbl">Total Belanja</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-val" style="color:var(--gold);">${fmt(u.monthEarned||0)}</div>
+          <div class="stat-mini-lbl">CB Bulan Ini</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-val" style="color:var(--blue);">${fmt(u.savingBalance||0)}</div>
+          <div class="stat-mini-lbl">Tabungan</div>
+        </div>
+        <div class="stat-mini">
+          <div class="stat-mini-val" style="color:var(--orange);">${(u.pawnItems||[]).length}</div>
+          <div class="stat-mini-lbl">Gadai/Jual</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-t">📍 Info Akun</div>
+      <div class="info-row"><span class="info-lbl">Nama</span><span class="info-val">${u.name}</span></div>
+      <div class="info-row"><span class="info-lbl">No. WhatsApp</span><span class="info-val">${u.phone}</span></div>
+      <div class="info-row"><span class="info-lbl">Alamat</span><span class="info-val" style="text-align:right;max-width:60%;">${u.address||'(belum diisi)'}</span></div>
+    </div>
+    <button class="btn-prim" onclick="doLogout2()" style="background:linear-gradient(135deg,#e03c3c,#c0392b);">🚪 Keluar Akun</button>
+  `;
+}
+
+function openWithdraw() {
+  const u = getU(); const s = loadSets();
+  document.getElementById('modalBody').innerHTML = `
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <h3>💸 Tarik Cashback</h3>
+    <div style="background:linear-gradient(135deg,#5c4400,var(--gold));color:#fff;border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:1px;">Saldo Cashback</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;margin-top:4px;">${fmt(u.cbBalance||0)}</div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Metode Pencairan</label>
+    <div class="pay-grid">
+      <div class="pay-opt on" data-wd="dana" onclick="selWd('dana',this)">💙 DANA</div>
+      <div class="pay-opt" data-wd="shopeepay" onclick="selWd('shopeepay',this)">🛒 ShopeePay</div>
+      <div class="pay-opt" data-wd="bca" onclick="selWd('bca',this)">🏦 BCA</div>
+      <div class="pay-opt" data-wd="cash" onclick="selWd('cash',this)">💵 Tunai</div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:12px;display:block;">Jumlah</label>
+    <input class="ain" id="wdAmt" type="number" placeholder="Min. ${fmt(s.minWd||10000)}" inputmode="numeric">
+    <button class="btn-prim" onclick="doWithdraw(false)">💸 Tarik Sebagian</button>
+    <button class="btn-prim" style="background:linear-gradient(135deg,#e03c3c,#c0392b);margin-top:8px;" onclick="doWithdraw(true)">💸 Tarik Semua (${fmt(u.cbBalance||0)})</button>
+  `;
+  document.getElementById('modal').classList.add('on');
+}
+function selWd(m, el) {
+  selWdMethod = m;
+  document.querySelectorAll('.pay-opt[data-wd]').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+}
+function doWithdraw(isFull) {
+  const u = getU(); const s = loadSets();
+  const amt = isFull ? (u.cbBalance||0) : parseInt(document.getElementById('wdAmt').value)||0;
+  if (amt <= 0) { alert('Masukkan jumlah!'); return; }
+  if (amt < (s.minWd||10000)) { alert('Minimal tarik '+fmt(s.minWd||10000)); return; }
+  if (amt > (u.cbBalance||0)) { alert('Saldo tidak cukup!'); return; }
+  const id = wid();
+  const methods = {dana:'DANA',shopeepay:'ShopeePay',bca:'BCA',cash:'Tunai'};
+  updU(uu => {
+    if (!uu.wdHistory) uu.wdHistory = [];
+    uu.wdHistory.unshift({ id, amount:amt, method:methods[selWdMethod], status:'proses', date:today(), isFull });
+  });
+  // Simpan ke shared storage agar admin bisa lihat
+  try {
+    var allWd = JSON.parse(localStorage.getItem('wmd_wd_v1')||'[]');
+    allWd.unshift({ id, cust:u.name, phone:u.phone, amount:amt, method:methods[selWdMethod], status:'proses', date:today(), isFull });
+    localStorage.setItem('wmd_wd_v1', JSON.stringify(allWd)); scheduleCloudPush();
+  } catch(e) {}
+  const msg = `💸 *PENGAJUAN PENARIKAN*\n\n👤 ${u.name}\n📞 ${u.phone}\n💰 Jumlah: ${fmt(amt)}${isFull?' (SEMUA)':''}\n💳 Metode: ${methods[selWdMethod]}\n📋 ID: #${id}\n\nMohon konfirmasi pencairan.`;
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(msg));
+  closeModal();
+  alert('✅ Pengajuan terkirim!\nMenunggu konfirmasi admin.');
+  goPage('wallet');
+}
+
+function openSaving(mode) {
+  const u = getU();
+  const initMode = mode || 'in';
+  document.getElementById('modalBody').innerHTML = `
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <h3>🏦 Tabungan Saya</h3>
+    <div style="background:linear-gradient(135deg,#1a4d7a,var(--blue));color:#fff;border-radius:14px;padding:16px;margin-bottom:14px;text-align:center;">
+      <div style="font-size:11px;opacity:.9;text-transform:uppercase;letter-spacing:1px;">Saldo Tabungan</div>
+      <div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800;margin-top:4px;">${fmt(u.savingBalance||0)}</div>
+    </div>
+    <div style="font-size:12px;color:var(--gray);margin-bottom:12px;text-align:center;">Saldo Dompet: <strong style="color:var(--gold);">${fmt(u.cbBalance||0)}</strong></div>
+    <div class="tabs" style="margin-bottom:14px;">
+      <button class="tab ${initMode==='in'?'on':''}" onclick="document.getElementById('svType').value='in';this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on');">⬆️ Setor</button>
+      <button class="tab ${initMode==='out'?'on':''}" onclick="document.getElementById('svType').value='out';this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('on'));this.classList.add('on');">⬇️ Tarik</button>
+    </div>
+    <input type="hidden" id="svType" value="${initMode}">
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Jumlah</label>
+    <input class="ain" id="svAmt" type="number" placeholder="0" inputmode="numeric">
+    <button class="btn-prim" onclick="doSaving()">💾 Proses</button>
+  `;
+  document.getElementById('modal').classList.add('on');
+}
+function doSaving() {
+  const type = document.getElementById('svType').value;
+  const amt = parseInt(document.getElementById('svAmt').value) || 0;
+  if (amt <= 0) { alert('Masukkan jumlah!'); return; }
+  const u = getU();
+  if (type === 'in') {
+    if (amt > (u.cbBalance||0)) { alert('Saldo dompet tidak cukup!'); return; }
+    updU(uu => {
+      uu.cbBalance = (uu.cbBalance||0) - amt;
+      uu.savingBalance = (uu.savingBalance||0) + amt;
+      if (!uu.svHistory) uu.svHistory = [];
+      uu.svHistory.unshift({ id:sid(), type:'setor', desc:'Setor ke tabungan', date:today(), amount:amt });
+    });
+    alert('✅ Berhasil menabung '+fmt(amt));
+  } else {
+    if (amt > (u.savingBalance||0)) { alert('Saldo tabungan tidak cukup!'); return; }
+    updU(uu => {
+      uu.savingBalance = (uu.savingBalance||0) - amt;
+      uu.cbBalance = (uu.cbBalance||0) + amt;
+      if (!uu.svHistory) uu.svHistory = [];
+      uu.svHistory.unshift({ id:sid(), type:'tarik', desc:'Tarik dari tabungan', date:today(), amount:-amt });
+    });
+    alert('✅ Berhasil tarik tabungan '+fmt(amt));
+  }
+  closeModal();
+  goPage('wallet');
+}
+
+function openTransfer() {
+  const u = getU();
+  document.getElementById('modalBody').innerHTML = `
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <h3>↗️ Transfer Dana</h3>
+    <div style="font-size:12px;color:var(--gray);margin-bottom:12px;padding:10px;background:var(--soft);border-radius:10px;">Saldo: <strong style="color:var(--gold);">${fmt(u.cbBalance||0)}</strong> · Biaya admin: <strong>${fmt(TF_FEE)}</strong></div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Bank/E-wallet Tujuan</label>
+    <div class="pay-grid" style="grid-template-columns:repeat(3,1fr);">
+      <div class="pay-opt on" data-tf="bca" onclick="selTf('bca',this)">🏦 BCA</div>
+      <div class="pay-opt" data-tf="bri" onclick="selTf('bri',this)">🏦 BRI</div>
+      <div class="pay-opt" data-tf="mandiri" onclick="selTf('mandiri',this)">🏦 Mandiri</div>
+      <div class="pay-opt" data-tf="dana" onclick="selTf('dana',this)">💙 DANA</div>
+      <div class="pay-opt" data-tf="shopeepay" onclick="selTf('shopeepay',this)">🛒 ShopeePay</div>
+      <div class="pay-opt" data-tf="gopay" onclick="selTf('gopay',this)">🟢 GoPay</div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:12px;display:block;">No. Rekening / HP</label>
+    <input class="ain" id="tfNum" type="tel" placeholder="0812xxxx atau 1234567890">
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Nama Penerima</label>
+    <input class="ain" id="tfName" type="text" placeholder="Nama lengkap">
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Jumlah Transfer</label>
+    <input class="ain" id="tfAmt" type="number" inputmode="numeric" placeholder="0">
+    <button class="btn-prim" onclick="doTransfer()">↗️ Transfer Sekarang</button>
+  `;
+  document.getElementById('modal').classList.add('on');
+}
+function selTf(m, el) {
+  selTfMethod = m;
+  document.querySelectorAll('.pay-opt[data-tf]').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+}
+function doTransfer() {
+  const u = getU(); const s = loadSets();
+  const num = document.getElementById('tfNum').value.trim();
+  const name = document.getElementById('tfName').value.trim();
+  const amt = parseInt(document.getElementById('tfAmt').value)||0;
+  if (!num || !name || amt <= 0) { alert('Lengkapi data transfer!'); return; }
+  const total = amt + TF_FEE;
+  if (total > (u.cbBalance||0)) { alert('Saldo tidak cukup! Butuh '+fmt(total)); return; }
+  const id = tid();
+  const destNames = {bca:'BCA',bri:'BRI',mandiri:'Mandiri',dana:'DANA',shopeepay:'ShopeePay',gopay:'GoPay'};
+  updU(uu => {
+    uu.cbBalance = (uu.cbBalance||0) - total;
+    if (!uu.tfHistory) uu.tfHistory = [];
+    uu.tfHistory.unshift({ id, dest:destNames[selTfMethod], destNum:num, destName:name, amount:amt, fee:TF_FEE, status:'proses', date:today() });
+  });
+  try {
+    var allTf = JSON.parse(localStorage.getItem('wmd_tf_v1')||'[]');
+    allTf.unshift({ id, cust:u.name, phone:u.phone, dest:destNames[selTfMethod], destNum:num, destName:name, amount:amt, fee:TF_FEE, status:'proses', date:today() });
+    localStorage.setItem('wmd_tf_v1', JSON.stringify(allTf)); scheduleCloudPush();
+  } catch(e) {}
+  const msg = `↗️ *PENGAJUAN TRANSFER*\n\n👤 ${u.name}\n📞 ${u.phone}\n\nTujuan: ${destNames[selTfMethod]}\nNo. Rek: ${num}\nA.n.: ${name}\n💰 Jumlah: ${fmt(amt)}\n💳 Biaya: ${fmt(TF_FEE)}\n📋 ID: #${id}\n\nMohon konfirmasi.`;
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(msg));
+  closeModal();
+  alert('✅ Transfer dalam proses!');
+  goPage('wallet');
+}
+
+function openPawn() {
+  document.getElementById('modalBody').innerHTML = `
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <h3>🏷️ Gadai / Titip Jual</h3>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:10px;padding:8px;background:var(--soft);border-radius:8px;">Ajukan barang untuk digadai atau dititip jual. Admin akan menghubungi via WA.</p>
+    <div id="pawnJasaInfo" style="font-size:12px;margin-bottom:12px;padding:10px;background:#fff8e1;border-radius:10px;border-left:3px solid var(--gold);"></div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Jenis Pengajuan</label>
+    <div class="pay-grid" style="margin-bottom:12px;">
+      <div class="pay-opt on" data-pw="gadai" onclick="selPw('gadai',this)">🏷️ Gadai</div>
+      <div class="pay-opt" data-pw="jual" onclick="selPw('jual',this)">🏪 Titip Jual</div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Nama Barang</label>
+    <input class="ain" id="pwItem" placeholder="Contoh: HP Samsung A32">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Kondisi</label>
+        <select class="ain" id="pwCond"><option>Sangat Baik</option><option>Baik</option><option>Cukup Baik</option><option>Kurang Baik</option></select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Kategori Barang</label>
+        <select class="ain" id="pwCat"></select>
+      </div>
+    </div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-top:8px;display:block;">Estimasi Nilai (Rp)</label>
+    <input class="ain" id="pwEst" type="number" inputmode="numeric" placeholder="0">
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;">Harga Jual yang Diinginkan (Rp) — Titip Jual</label>
+    <input class="ain" id="pwHarga" type="number" inputmode="numeric" placeholder="0 (opsional)">
+    <button class="btn-prim" onclick="doPawn()">📤 Ajukan</button>
+  `;
+  // Load kategori
+  var _cts = [];
+  try { _cts = JSON.parse(localStorage.getItem('wmd_cats_v1')||'null') || ['Elektronik','Fashion','Rumah Tangga','Kendaraan','Perhiasan','Lainnya']; } catch(e) { _cts = ['Elektronik','Fashion','Rumah Tangga','Kendaraan','Perhiasan','Lainnya']; }
+  var _pcEl = document.getElementById('pwCat');
+  if (_pcEl) _pcEl.innerHTML = _cts.map(function(c){return '<option>'+c+'</option>';}).join('');
+  // Load info jasa
+  var _sj = loadSets();
+  var _jiEl = document.getElementById('pawnJasaInfo');
+  if (_jiEl) _jiEl.innerHTML = '<strong>💰 Biaya Jasa:</strong><br>🏷️ Gadai: <b>'+(_sj.jasaGadai||5)+'%</b> dari pinjaman<br>🏪 Titip Jual: <b>'+(_sj.jasaTitip||10)+'%</b> dari harga + simpan <b>'+(_sj.jasaSimpan||2)+'%</b>/bulan';
+  document.getElementById('modal').classList.add('on');
+}
+function selPw(t, el) {
+  selPawType = t;
+  document.querySelectorAll('.pay-opt[data-pw]').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+}
+function doPawn() {
+  const u = getU(); const s = loadSets();
+  const item = document.getElementById('pwItem').value.trim();
+  const cond = document.getElementById('pwCond').value;
+  const est = parseInt(document.getElementById('pwEst').value)||0;
+  if (!item || est<=0) { alert('Lengkapi data pengajuan!'); return; }
+  const id = pid();
+  const cat = document.getElementById('pwCat') ? document.getElementById('pwCat').value : '';
+  const hargaJual = parseInt(document.getElementById('pwHarga')?.value)||0;
+  const pawnEntry = { id, item, cond, cat, est, hargaJual, type:selPawType, status:'review', loanAmt:0, jasaPct:0, jasaAmt:0, date:today(), photos:[...pawnPhotos] };
+  updU(uu => {
+    if (!uu.pawnItems) uu.pawnItems = [];
+    uu.pawnItems.unshift(pawnEntry);
+  });
+  try {
+    var allPawn = JSON.parse(localStorage.getItem('wmd_pawn_v1')||'[]');
+    allPawn.unshift({ ...pawnEntry, cust:u.name, phone:u.phone });
+    localStorage.setItem('wmd_pawn_v1', JSON.stringify(allPawn)); scheduleCloudPush();
+  } catch(e) {}
+  const msg = `🏷️ *PENGAJUAN ${selPawType==='gadai'?'GADAI':'TITIP JUAL'}*\n\n👤 ${u.name}\n📞 ${u.phone}\n\nBarang: ${item}\nKondisi: ${cond}\nEst. nilai: ${fmt(est)}\n📋 ID: #${id}\n\nMohon di-review.`;
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(msg));
+  closeModal();
+  alert('✅ Pengajuan terkirim!\nMenunggu review admin.');
+  goPage('wallet');
+}
+
+// ═══ FOTO UPLOAD (PAWN) ═══
+let pawnPhotos = [];
+function handlePhotoUpload(input) {
+  const files = Array.from(input.files);
+  const remaining = 3 - pawnPhotos.length;
+  const toAdd = files.slice(0, remaining);
+  let loaded = 0;
+  toAdd.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      // Compress to max 400px wide
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const max = 400;
+        const ratio = Math.min(max/img.width, max/img.height, 1);
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        const b64 = canvas.toDataURL('image/jpeg', 0.7);
+        pawnPhotos.push(b64);
+        renderPhotoPreview();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function renderPhotoPreview() {
+  const el = document.getElementById('photoPreview');
+  if (!el) return;
+  el.innerHTML = pawnPhotos.map((b64, i) => `
+    <div style="position:relative;">
+      <img src="${b64}" style="width:70px;height:70px;object-fit:cover;border-radius:10px;border:2px solid var(--border);">
+      <button onclick="removePhoto(${i})" style="position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;">✕</button>
+    </div>
+  `).join('');
+}
+function removePhoto(i) { pawnPhotos.splice(i, 1); renderPhotoPreview(); }
+
+// ═══ GALLERY PAGE ═══
+function renderGallery() {
+  const W_GALLERY = 'wmd_gallery_v1';
+  let gallery = [];
+  try { gallery = JSON.parse(localStorage.getItem(W_GALLERY)||'[]'); } catch(e){}
+  
+  // Juga tampilkan foto dari pawn items semua user
+  const allUsers = loadUsers();
+  const pawnPhotos_flat = [];
+  Object.values(allUsers).forEach(u => {
+    (u.pawnItems||[]).forEach(p => {
+      (p.photos||[]).forEach(photo => {
+        pawnPhotos_flat.push({ photo, item: p.item, owner: u.name, type: p.type, date: p.date, status: p.status });
+      });
+    });
+  });
+
+  document.getElementById('mPage').innerHTML = `
+    <div class="banner" style="padding:18px;">
+      <h2>🖼️ Galeri Toko</h2>
+      <p>Barang titip jual & gadai dari pelanggan</p>
+    </div>
+    ${pawnPhotos_flat.length === 0 && gallery.length === 0 ? `
+      <div class="empty"><span>🖼️</span>Belum ada foto di galeri<br>
+      <p style="margin-top:6px;font-size:11px;">Foto otomatis muncul saat pelanggan mengajukan gadai/jual dengan foto</p></div>
+    ` : `
+      <div style="columns:2;gap:10px;">
+        ${[...gallery, ...pawnPhotos_flat].map(item => `
+          <div style="break-inside:avoid;margin-bottom:10px;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--sh);">
+            <img src="${item.photo}" style="width:100%;display:block;aspect-ratio:1;object-fit:cover;">
+            <div style="padding:10px;">
+              <div style="font-size:12px;font-weight:700;">${item.item||''}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                <span style="font-size:10px;color:var(--gray);">${item.owner||''}</span>
+                <span class="bdg ${item.status==='approved'?'bdg-green':item.status==='rejected'?'bdg-red':'bdg-orange'}" style="font-size:9px;">${item.type==='gadai'?'🏷️ Gadai':'🏪 Jual'}</span>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `}
+  `;
+}
+
+function hubungiPenjual(phone, item, seller) {
+  const s = loadSets();
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+
+    encodeURIComponent('Halo, saya tertarik dengan barang titip jual: *'+item+'* dari '+seller+'. Apakah masih tersedia?'));
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('on'); }
+
+// Auto sync on page load
+(async function(){ await initCloudSync(); })();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('authWrap').style.display !== 'none') {
+    if (document.getElementById('loginF').style.display !== 'none') doLogin();
+    else doReg();
+  }
+});
+// ═══ BUKA ADMIN (klik logo 5x atau URL ?admin) ═══
+var _adminTapCount = 0, _adminTapTimer = null;
+function handleAdminTap() {
+  _adminTapCount++;
+  clearTimeout(_adminTapTimer);
+  if (_adminTapCount >= 5) {
+    _adminTapCount = 0;
+    window.open(window.location.href.split('?')[0] + '?admin', '_self');
+  } else {
+    _adminTapTimer = setTimeout(function(){ _adminTapCount = 0; }, 2000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//   SUPABASE SYNC — Sinkronisasi data antar HP (database asli)
+// ═══════════════════════════════════════════════════════════
+
+var SUPA_URL = 'https://lhcarzojdpswdmqoivoj.supabase.co';
+var SUPA_KEY = 'sb_publishable_YqSk3HuB9_Oj2HAeZcOavg_cVZ8qhaU';
+var LOCAL_KEYS = ['wmd_users_v2','wmd_products_v2','wmd_settings_v2',
+                 'wmd_cats_v1','wmd_orders_v1','wmd_wd_v1',
+                 'wmd_tf_v1','wmd_pawn_v1'];
+
+function showSyncStatus(status, msg) {
+  var el = document.getElementById('syncStatus');
+  if (!el) return;
+  var colors = {ok:'#28a05f', err:'#e03c3c', busy:'#f5a623'};
+  var icons  = {ok:'☁️', err:'⚠️', busy:'🔄'};
+  el.style.background = colors[status]||'#888';
+  el.innerHTML = (icons[status]||'') + ' ' + (msg||'');
+  el.style.display = 'flex';
+  if (status === 'ok') setTimeout(function(){ el.style.display='none'; }, 2500);
+}
+
+function supaHeaders(extra) {
+  var h = {'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json'};
+  if (extra) for (var k in extra) h[k] = extra[k];
+  return h;
+}
+
+async function supaUpsert(table, rows, onConflict) {
+  if (!rows || !rows.length) return true;
+  try {
+    var r = await fetch(SUPA_URL+'/rest/v1/'+table+'?on_conflict='+onConflict, {
+      method: 'POST',
+      headers: supaHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body: JSON.stringify(rows)
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function supaSelectAll(table) {
+  try {
+    var r = await fetch(SUPA_URL+'/rest/v1/'+table+'?select=*', { headers: supaHeaders() });
+    if (!r.ok) return [];
+    return await r.json();
+  } catch(e) { return []; }
+}
+
+function getAllLocalData() {
+  var data = {};
+  LOCAL_KEYS.forEach(function(k) {
+    try { data[k] = JSON.parse(localStorage.getItem(k)||'null'); }
+    catch(e) { data[k] = null; }
+  });
+  return data;
+}
+
+function setAllLocalData(data) {
+  if (!data) return;
+  LOCAL_KEYS.forEach(function(k) {
+    if (data[k] !== undefined && data[k] !== null) {
+      try { localStorage.setItem(k, JSON.stringify(data[k])); }
+      catch(e) {}
+    }
+  });
+}
+
+// ─── PUSH: localStorage → Supabase (kirim data lokal ke database) ───
+var _pushTimer = null;
+function scheduleCloudPush() {
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(pushToCloud, 1500);
+}
+
+async function pushToCloud() {
+  showSyncStatus('busy', 'Menyimpan...');
+  try {
+    var users = JSON.parse(localStorage.getItem('wmd_users_v2')||'{}');
+    var custRows = Object.keys(users).map(function(ph){
+      var u = users[ph];
+      return {
+        phone: ph, name:u.name||'', pin:String(u.pin||''), address:u.address||'',
+        cb_balance:u.cbBalance||0, saving_balance:u.savingBalance||0,
+        month_spend:u.monthSpend||0, month_earned:u.monthEarned||0, total_spend:u.totalSpend||0,
+        data: u
+      };
+    });
+    await supaUpsert('customers', custRows, 'phone');
+
+    var prods = JSON.parse(localStorage.getItem('wmd_products_v2')||'[]');
+    var prodRows = prods.map(function(p){
+      return {id:p.id, name:p.name, icon:p.icon||'', price:p.price||0, stock:p.stock||0, unit:p.unit||'pcs',
+        category:p.cat||null, badge:p.badge||'', active:p.active!==false, cb_rp:p.cbRp||0, data:p};
+    });
+    await supaUpsert('products', prodRows, 'id');
+
+    var cats = JSON.parse(localStorage.getItem('wmd_cats_v1')||'[]');
+    var catRows = cats.map(function(c){ return {name:c}; });
+    await supaUpsert('categories', catRows, 'name');
+
+    var s = JSON.parse(localStorage.getItem('wmd_settings_v2')||'null');
+    if (s) {
+      await supaUpsert('store_settings', [{
+        id:1, cb_enabled:s.cbEnabled, cb_rate:s.cbRate, cb_bonus:s.cbBonus, cb_thresh:s.cbThresh,
+        min_wd:s.minWd, wd_day:s.wdDay, store_open:s.storeOpen, store_name:s.storeName,
+        tagline:s.tagline, theme_c1:s.themeC1, theme_c2:s.themeC2, wa_num:s.waNum, hours:s.hours
+      }], 'id');
+    }
+
+    var orders = JSON.parse(localStorage.getItem('wmd_orders_v1')||'[]');
+    var ordRows = orders.map(function(o){
+      return {id:o.id, phone:o.phone, cust_name:o.cust, address:o.address, items_summary:o.items,
+        items_detail:o.itemsDetail||[], subtotal:o.subtotal||0, wallet_pay:o.walPay||0, total:o.total||0,
+        cashback:o.cb||0, pay_method:o.pay, ship_method:o.ship||null, status:o.status, data:o};
+    });
+    await supaUpsert('orders', ordRows, 'id');
+
+    var wds = JSON.parse(localStorage.getItem('wmd_wd_v1')||'[]');
+    var wdRows = wds.map(function(w){
+      return {id:w.id, phone:w.phone, cust_name:w.cust, amount:w.amount||0, method:w.method,
+        is_full:!!w.isFull, status:w.status, data:w};
+    });
+    await supaUpsert('withdrawals', wdRows, 'id');
+
+    var tfs = JSON.parse(localStorage.getItem('wmd_tf_v1')||'[]');
+    var tfRows = tfs.map(function(t){
+      return {id:t.id, phone:t.phone, cust_name:t.cust, dest:t.dest, dest_num:t.destNum,
+        dest_name:t.destName, amount:t.amount||0, fee:t.fee||0, status:t.status, data:t};
+    });
+    await supaUpsert('transfers', tfRows, 'id');
+
+    var pawns = JSON.parse(localStorage.getItem('wmd_pawn_v1')||'[]');
+    var pawnRows = pawns.map(function(p){
+      return {id:p.id, phone:p.phone, cust_name:p.cust, item:p.item, type:p.type, category:p.cat||'',
+        est_value:p.est||0, loan_amt:p.loanAmt||0, jasa_pct:p.jasaPct||0, jasa_amt:p.jasaAmt||0,
+        note:p.note||'', photos:p.photos||[], status:p.status, data:p};
+    });
+    await supaUpsert('pawns', pawnRows, 'id');
+
+    showSyncStatus('ok', 'Tersimpan');
+  } catch(e) {
+    showSyncStatus('err', 'Gagal simpan');
+  }
+}
+
+// ─── PULL: Supabase → localStorage (ambil data terbaru dari database) ───
+var _lastPull = 0;
+async function autoPullIfNeeded() {
+  var now = Date.now();
+  if (now - _lastPull > 30000) {
+    _lastPull = now;
+    await pullFromCloud(true);
+  }
+}
+
+async function pullFromCloud(silent) {
+  if (!silent) showSyncStatus('busy', 'Sinkronisasi...');
+  try {
+    var results = await Promise.all([
+      supaSelectAll('customers'), supaSelectAll('products'), supaSelectAll('categories'),
+      supaSelectAll('store_settings'), supaSelectAll('orders'), supaSelectAll('withdrawals'),
+      supaSelectAll('transfers'), supaSelectAll('pawns')
+    ]);
+    var custs=results[0], prods=results[1], cats=results[2], sets=results[3],
+        orders=results[4], wds=results[5], tfs=results[6], pawns=results[7];
+
+    var usersObj = {};
+    custs.forEach(function(c){
+      usersObj[c.phone] = c.data || {
+        name:c.name, phone:c.phone, pin:c.pin, address:c.address,
+        cbBalance:c.cb_balance, savingBalance:c.saving_balance,
+        monthSpend:c.month_spend, monthEarned:c.month_earned, totalSpend:c.total_spend,
+        txHistory:[], wdHistory:[], tfHistory:[], svHistory:[], pawnItems:[]
+      };
+    });
+    localStorage.setItem('wmd_users_v2', JSON.stringify(usersObj));
+
+    if (prods.length) {
+      var prodArr = prods.map(function(p){
+        return p.data || {id:p.id,name:p.name,icon:p.icon,price:p.price,stock:p.stock,unit:p.unit,
+          cat:p.category,badge:p.badge,active:p.active,cbRp:p.cb_rp};
+      });
+      localStorage.setItem('wmd_products_v2', JSON.stringify(prodArr));
+    }
+
+    if (cats.length) {
+      localStorage.setItem('wmd_cats_v1', JSON.stringify(cats.map(function(c){ return c.name; })));
+    }
+
+    if (sets && sets[0]) {
+      var s = sets[0];
+      localStorage.setItem('wmd_settings_v2', JSON.stringify({
+        cbEnabled:s.cb_enabled, cbRate:s.cb_rate, cbBonus:s.cb_bonus, cbThresh:s.cb_thresh,
+        minWd:s.min_wd, wdDay:s.wd_day, storeOpen:s.store_open, storeName:s.store_name,
+        tagline:s.tagline, themeC1:s.theme_c1, themeC2:s.theme_c2, waNum:s.wa_num, hours:s.hours
+      }));
+    }
+
+    var ordArr = orders.map(function(o){ return o.data || o; });
+    localStorage.setItem('wmd_orders_v1', JSON.stringify(ordArr));
+    localStorage.setItem('wmd_wd_v1', JSON.stringify(wds.map(function(w){ return w.data || w; })));
+    localStorage.setItem('wmd_tf_v1', JSON.stringify(tfs.map(function(t){ return t.data || t; })));
+    localStorage.setItem('wmd_pawn_v1', JSON.stringify(pawns.map(function(p){ return p.data || p; })));
+
+    if (!silent) showSyncStatus('ok', 'Tersinkron');
+    return true;
+  } catch(e) {
+    if (!silent) showSyncStatus('err', 'Offline - cek koneksi');
+    return false;
+  }
+}
+
+async function initCloudSync() {
+  await pullFromCloud(true);
+}
+
+</script>
+</body>
+</html>

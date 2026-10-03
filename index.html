@@ -422,6 +422,7 @@ function goPage(p, el) {
     if (navEl) navEl.classList.add('on');
   }
   updHdr();
+  window._curPage = p;
   autoPullIfNeeded();
   if (p==='home')    renderHome();
   if (p==='wallet')  renderWallet();
@@ -1186,7 +1187,7 @@ function handlePhotoUpload(input) {
               headers: {'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'image/jpeg'},
               body: blob
             });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
+            if (!r.ok) { let t=''; try{ t=await r.text(); }catch(_){} throw new Error('HTTP ' + r.status + ' ' + t.slice(0,160)); }
             pawnPhotos.push(SUPA_URL + '/storage/v1/object/public/produk/' + name);
             renderPhotoPreview();
           } catch (err) {
@@ -1266,6 +1267,7 @@ function closeModal() { document.getElementById('modal').classList.remove('on');
 
 // Auto sync on page load
 (async function(){ await initCloudSync(); })();
+setInterval(function(){ if (typeof CU !== 'undefined' && CU) autoPullIfNeeded(); }, 30000);
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('authWrap').style.display !== 'none') {
@@ -1440,7 +1442,20 @@ async function autoPullIfNeeded() {
   }
 }
 
+function _dataSig() {
+  return ['wmd_products_v2','wmd_users_v2','wmd_cats_v1','wmd_settings_v2'].map(function(k){return localStorage.getItem(k)||'';}).join('|');
+}
+function refreshCurrentPage() {
+  try {
+    if (typeof CU === 'undefined' || !CU) return;
+    var p = window._curPage;
+    if (p === 'home') renderHome();
+    else if (p === 'wallet') renderWallet();
+    else if (p === 'history') renderHistory();
+  } catch (e) {}
+}
 async function pullFromCloud(silent) {
+  var _sigBefore = _dataSig();
   if (!silent) showSyncStatus('busy', 'Sinkronisasi...');
   try {
     var results = await Promise.all([
@@ -1490,6 +1505,7 @@ async function pullFromCloud(silent) {
     if (tfs.length) localStorage.setItem('wmd_tf_v1', JSON.stringify(tfs.map(function(t){ return t.data || t; })));
     if (pawns.length) localStorage.setItem('wmd_pawn_v1', JSON.stringify(pawns.map(function(p){ return p.data || p; })));
 
+    if (_dataSig() !== _sigBefore) refreshCurrentPage();
     if (!silent) showSyncStatus('ok', 'Tersinkron');
     return true;
   } catch(e) {

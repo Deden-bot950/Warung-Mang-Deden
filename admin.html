@@ -1480,12 +1480,12 @@ async function previewProdImg(input){
       headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'image/jpeg'},
       body:blob
     });
-    if(!r.ok)throw new Error('HTTP '+r.status);
+    if(!r.ok){var t='';try{t=await r.text();}catch(_){}throw new Error('HTTP '+r.status+' '+t.slice(0,160));}
     var url=SUPA_URL+'/storage/v1/object/public/produk/'+name;
     prev.innerHTML='<img src="'+url+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:2px solid #cde8d9;">';
     prev.dataset.img=url;
   }catch(e){
-    prev.innerHTML='<p style="text-align:center;color:#e03c3c;font-size:12px">⚠️ Upload gagal ('+e.message+'). Cek bucket "produk" & policy.</p>';
+    prev.innerHTML='<p style="text-align:center;color:#e03c3c;font-size:12px">⚠️ Upload gagal ('+e.message+'). </p>';
     prev.dataset.img='';
   }
 }

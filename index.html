@@ -1178,9 +1178,21 @@ function handlePhotoUpload(input) {
         canvas.width = Math.round(img.width * ratio);
         canvas.height = Math.round(img.height * ratio);
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        const b64 = canvas.toDataURL('image/jpeg', 0.7);
-        pawnPhotos.push(b64);
-        renderPhotoPreview();
+        canvas.toBlob(async blob => {
+          const name = 'gadai/g' + Date.now() + '_' + Math.floor(Math.random()*1000) + '.jpg';
+          try {
+            const r = await fetch(SUPA_URL + '/storage/v1/object/produk/' + name, {
+              method: 'POST',
+              headers: {'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'image/jpeg'},
+              body: blob
+            });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            pawnPhotos.push(SUPA_URL + '/storage/v1/object/public/produk/' + name);
+            renderPhotoPreview();
+          } catch (err) {
+            alert('⚠️ Upload foto gagal (' + err.message + '). Coba lagi.');
+          }
+        }, 'image/jpeg', 0.7);
       };
       img.src = e.target.result;
     };

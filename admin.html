@@ -1457,22 +1457,37 @@ function renderProds(cat){
 function updStock(id,val){var p2=loadP();var p=p2.find(function(x){return x.id===id;});if(p&&p.stock!==999){p.stock=Math.max(0,parseInt(val)||0);saveP(p2);}}
 function togProd(id,v){var p2=loadP();var p=p2.find(function(x){return x.id===id;});if(p){p.active=v;saveP(p2);}}
 
-function previewProdImg(input){
+async function previewProdImg(input){
   if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
+  var prev=document.getElementById('prodImgPreview');
+  prev.innerHTML='<p style="text-align:center;font-size:12px">⏳ Mengupload foto...</p>';
+  var file=input.files[0];
+  var blob=await new Promise(function(res){
     var img=new Image();
     img.onload=function(){
       var cv=document.createElement('canvas');
-      var max=500,ratio=Math.min(max/img.width,max/img.height,1);
-      cv.width=Math.round(img.width*ratio);cv.height=Math.round(img.height*ratio);
+      var r=Math.min(500/img.width,500/img.height,1);
+      cv.width=Math.round(img.width*r);cv.height=Math.round(img.height*r);
       cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
-      var b64=cv.toDataURL('image/jpeg',0.8);
-      var prev=document.getElementById('prodImgPreview');
-      prev.innerHTML='<img src="'+b64+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:2px solid #cde8d9;">';
-      prev.dataset.img=b64;
-    };img.src=e.target.result;
-  };reader.readAsDataURL(input.files[0]);
+      cv.toBlob(res,'image/jpeg',0.8);
+    };
+    img.src=URL.createObjectURL(file);
+  });
+  var name='p'+Date.now()+'.jpg';
+  try{
+    var r=await fetch(SUPA_URL+'/storage/v1/object/produk/'+name,{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'image/jpeg'},
+      body:blob
+    });
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    var url=SUPA_URL+'/storage/v1/object/public/produk/'+name;
+    prev.innerHTML='<img src="'+url+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:2px solid #cde8d9;">';
+    prev.dataset.img=url;
+  }catch(e){
+    prev.innerHTML='<p style="text-align:center;color:#e03c3c;font-size:12px">⚠️ Upload gagal ('+e.message+'). Cek bucket "produk" & policy.</p>';
+    prev.dataset.img='';
+  }
 }
 function clearProdImg(){
   var prev=document.getElementById('prodImgPreview');
@@ -1517,7 +1532,11 @@ function saveProd(){
   saveP(p2);document.getElementById('prodModal').classList.remove('on');renderProds('semua');
   alert('✅ Produk disimpan!'+(newImg?' (dengan foto)':''));
 }
-function delProd(id){if(!confirm('Hapus produk ini?'))return;saveP(loadP().filter(function(p){return p.id!==id;}));renderProds('semua');}
+async function delProd(id){if(!confirm('Hapus produk ini?'))return;
+  try{var r=await fetch(SUPA_URL+'/rest/v1/products?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:supaHeaders()});
+    if(!r.ok)alert('⚠️ Terhapus di HP ini saja (gagal hapus di database: HTTP '+r.status+'). Cek policy DELETE tabel products.');
+  }catch(e){alert('⚠️ Offline: produk belum terhapus di database.');}
+  saveP(loadP().filter(function(p){return p.id!==id;}));renderProds('semua');}
 function openBatch(){var ps=loadP().filter(function(p){return p.stock!==999;});document.getElementById('batchList').innerHTML=ps.map(function(p){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f4f1"><div style="font-size:13px">'+p.icon+' '+p.name+'</div><input class="stk-input" type="number" value="'+p.stock+'" id="b_'+p.id+'" min="0"></div>';}).join('');document.getElementById('batchModal').classList.add('on');}
 function saveBatch(){var p2=loadP();p2.forEach(function(p){var el=document.getElementById('b_'+p.id);if(el&&p.stock!==999)p.stock=Math.max(0,parseInt(el.value)||0);});saveP(p2);document.getElementById('batchModal').classList.remove('on');renderProds('semua');alert('✅ Stok berhasil diperbarui!');}
 

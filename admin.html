@@ -141,6 +141,7 @@ tr:hover td{background:#fafffe;}
       <div class="sbi on" onclick="goPage('dashboard',this)"><span class="sbi-ico">📊</span>Dashboard</div>
       <div class="sbi" onclick="goPage('orders',this)"><span class="sbi-ico">📦</span>Pesanan <span class="sbadge" id="ordBadge">0</span></div>
       <div class="sbi" onclick="goPage('products',this)"><span class="sbi-ico">🛒</span>Produk &amp; Stok</div>
+      <div class="sbi" onclick="openPpobAdm()"><span class="sbi-ico">📱</span>Pulsa &amp; Token</div>
       <div class="sbi" onclick="goPage('kategori',this)"><span class="sbi-ico">🏷️</span>Kelola Kategori</div>
       <div class="sbi" onclick="goPage('appearance',this)"><span class="sbi-ico">🎨</span>Tampilan Web</div>
     </div>
@@ -507,6 +508,7 @@ tr:hover td{background:#fafffe;}
               <div class="fr"><label>No. WA</label><input class="fi" id="stWA" value="087735205340"></div>
               <div class="fr"><label>Jam Buka</label><input class="fi" id="stHours" value="07.00–21.00"></div>
               <div class="fr"><label>Alamat</label><input class="fi" id="stAddr" placeholder="Jl. ..."></div>
+              <div class="fr"><label>Logo Toko</label><div style="display:flex;align-items:center;gap:12px;margin-top:6px;"><div id="logoPrev" style="width:60px;height:60px;border-radius:16px;background:#e8f5ee;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;">🏪</div><div><label class="btn btn-g" style="display:inline-block;cursor:pointer;">📷 Pilih Logo<input type="file" accept="image/*" style="display:none" onchange="uploadLogo(this)"></label> <button class="btn" onclick="delLogo()">🗑️ Hapus</button><div id="logoStatus" style="font-size:11px;margin-top:4px;"></div></div></div></div>
               <button class="btn btn-g" onclick="saveStoreSetting()" style="width:100%">💾 Simpan</button>
             </div>
           </div>
@@ -1458,7 +1460,7 @@ function seedProds(){
   saveP(dp);renderProds('semua');
 }
 function renderProds(cat){
-  var prods=loadP();var list=cat==='semua'?prods:prods.filter(function(p){return p.cat===cat;});
+  var prods=loadP().filter(function(p){return p.cat!=='PPOB';});var list=cat==='semua'?prods:prods.filter(function(p){return p.cat===cat;});
   document.getElementById('prodTbl').innerHTML=list.length?list.map(function(p){
     var sc=p.stock===999?'color:var(--g1)':(p.stock===0?'color:var(--red);font-weight:700':(p.stock<5?'color:var(--gold);font-weight:700':''));
     return '<tr><td>'+p.icon+' <strong>'+p.name+'</strong>'+(p.badge?'<br><span class="bdg bdg-orange" style="font-size:9px">'+p.badge+'</span>':'')+(!p.active?'<span class="bdg bdg-red" style="font-size:9px;margin-left:4px">Nonaktif</span>':'')+'</td><td><span class="bdg bdg-gray">'+p.cat+'</span></td><td>'+(p.stock===999?'Lihat harga':fmt(p.price))+'</td><td style="'+sc+'">'+(p.stock===999?'∞':'<input class="stk-input" type="number" value="'+p.stock+'" min="0" onchange="updStock(\''+p.id+'\',this.value)">')+' '+p.unit+'</td><td><label class="tog" style="width:36px;height:20px"><input type="checkbox" '+(p.active?'checked':'')+' onchange="togProd(\''+p.id+'\',this.checked)"><span class="tog-sl"></span></label></td><td style="display:flex;gap:4px"><button class="btn btn-out btn-xs" onclick="openEditProd(\''+p.id+'\')">✏️</button><button class="btn btn-red btn-xs" onclick="delProd(\''+p.id+'\')">🗑️</button></td></tr>';
@@ -1542,6 +1544,35 @@ function saveProd(){
   saveP(p2);document.getElementById('prodModal').classList.remove('on');renderProds('semua');
   alert('✅ Produk disimpan!'+(newImg?' (dengan foto)':''));
 }
+
+function openPpobAdm(){
+  var m=document.getElementById('ppobAdm');
+  if(!m){m=document.createElement('div');m.id='ppobAdm';m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;display:flex;align-items:flex-end;justify-content:center;';document.body.appendChild(m);}
+  var ps=loadP().filter(function(p){return p.cat==='PPOB';});var tl={pulsa:'Pulsa',kuota:'Kuota',token:'Token'};
+  var st='width:100%;padding:10px;border:2px solid #cde8d9;border-radius:10px;margin-top:8px;font-size:14px;box-sizing:border-box;';
+  m.innerHTML='<div style="background:#fff;width:100%;max-width:480px;max-height:85vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px;"><b style="font-size:15px;">📱 Harga Pulsa, Kuota & Token</b><div style="margin:10px 0;">'
+   +(ps.length?ps.map(function(p){return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee;font-size:13px;"><span>'+(tl[p.ppob]||'Pulsa')+' · '+p.name+' · <b>'+fmt(p.price)+'</b></span><button onclick="delPpobAdm(\''+p.id+'\')" style="border:0;background:#fee;color:#c00;border-radius:8px;padding:4px 10px;">Hapus</button></div>';}).join(''):'<i style="font-size:12px">Belum ada item.</i>')
+   +'</div><select id="ppT" style="'+st+'"><option value="pulsa">Pulsa</option><option value="kuota">Kuota</option><option value="token">Token PLN</option></select>'
+   +'<input id="ppN" style="'+st+'" placeholder="Nama, mis. Telkomsel 10.000"><input id="ppP" type="number" style="'+st+'" placeholder="Harga jual (Rp)">'
+   +'<button onclick="addPpobAdm()" style="'+st+'background:#1a6b42;color:#fff;border:0;font-weight:700;">+ Tambah</button>'
+   +'<button onclick="document.getElementById(\'ppobAdm\').remove()" style="'+st+'background:#eee;border:0;">Tutup</button></div>';
+}
+function addPpobAdm(){var n=document.getElementById('ppN').value.trim(),pr=parseInt(document.getElementById('ppP').value)||0,t=document.getElementById('ppT').value;if(!n||pr<=0){alert('Isi nama dan harga!');return;}var l=loadP();l.push({id:'pp'+Date.now(),name:n,icon:'📱',price:pr,stock:999,unit:'pcs',cat:'PPOB',ppob:t,badge:'',active:true,cbRp:0});saveP(l);openPpobAdm();}
+function delPpobAdm(id){if(!confirm('Hapus item ini?'))return;saveP(loadP().filter(function(p){return p.id!==id;}));try{fetch(SUPA_URL+'/rest/v1/products?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:supaHeaders()});}catch(e){}openPpobAdm();}
+
+function logoUrl(){return SUPA_URL+'/storage/v1/object/public/produk/logo.png?t='+Date.now();}
+function showLogoPrev(){var i=new Image();i.onload=function(){document.querySelectorAll('#logoPrev,.l-ico').forEach(function(e){e.innerHTML='<img src="'+i.src+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';});};i.onerror=function(){var p=document.getElementById('logoPrev');if(p)p.textContent='🏪';};i.src=logoUrl();}
+async function uploadLogo(input){
+  var f=input.files&&input.files[0];if(!f)return;var st=document.getElementById('logoStatus');st.textContent='⏳ Mengupload...';
+  var blob=await new Promise(function(res){var img=new Image();img.onload=function(){var c=document.createElement('canvas');c.width=c.height=256;var m=Math.min(img.width,img.height);c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,256,256);c.toBlob(res,'image/png');};img.src=URL.createObjectURL(f);});
+  try{var r=await fetch(SUPA_URL+'/storage/v1/object/produk/logo.png',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'image/png','x-upsert':'true','cache-control':'max-age=60'},body:blob});
+    if(!r.ok){var t='';try{t=await r.text();}catch(_){}throw new Error('HTTP '+r.status+' '+t.slice(0,120));}
+    st.textContent='✅ Logo tersimpan. Tampil di aplikasi dalam ±1 menit.';showLogoPrev();
+  }catch(e){st.textContent='⚠️ Gagal: '+e.message;}
+}
+async function delLogo(){if(!confirm('Kembalikan logo ke ikon 🏪?'))return;var st=document.getElementById('logoStatus');
+  try{var r=await fetch(SUPA_URL+'/storage/v1/object/produk/logo.png',{method:'DELETE',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY}});st.textContent=r.ok?'✅ Logo dihapus':'⚠️ Gagal hapus (HTTP '+r.status+')';var p=document.getElementById('logoPrev');if(r.ok&&p)p.textContent='🏪';}catch(e){st.textContent='⚠️ Offline';}}
+setTimeout(showLogoPrev,800);
 async function delProd(id){if(!confirm('Hapus produk ini?'))return;
   try{var r=await fetch(SUPA_URL+'/rest/v1/products?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:supaHeaders()});
     if(!r.ok)alert('⚠️ Terhapus di HP ini saja (gagal hapus di database: HTTP '+r.status+'). Cek policy DELETE tabel products.');
@@ -1734,7 +1765,7 @@ function openApprPawn(id){var p=pawns.find(function(x){return x.id===id;});if(!p
   document.getElementById('pawnApprAmt').value=_net;
   document.getElementById('pawnJasaPct').value=_jPct;
   document.getElementById('pawnJasaAmt').value=_jasa;document.getElementById('pawnApprNote').value='';document.getElementById('pawnApprModal').classList.add('on');}
-function doApprovePawn(){var p=pawns.find(function(x){return x.id===approvingPawnId;});if(!p)return;var amt=parseInt(document.getElementById('pawnApprAmt').value)||0;var jPct=parseFloat(document.getElementById('pawnJasaPct').value)||0;var jAmt=parseInt(document.getElementById('pawnJasaAmt').value)||0;p.status='approved';p.loanAmt=amt;p.jasaPct=jPct;p.jasaAmt=jAmt;p.note=document.getElementById('pawnApprNote').value;var users=loadU();if(users[p.phone]){if(!users[p.phone].pawnItems)users[p.phone].pawnItems=[];users[p.phone].pawnItems=users[p.phone].pawnItems.filter(function(x){return x.id!==p.id;});users[p.phone].pawnItems.push({id:p.id,item:p.item,type:p.type,cat:p.cat||'',status:'approved',loanAmt:amt,jasaPct:jPct,jasaAmt:jAmt,date:p.date,photos:p.photos||[]});if(amt>0&&p.type==='gadai')users[p.phone].cbBalance=(users[p.phone].cbBalance||0)+amt;saveU(users);}document.getElementById('pawnApprModal').classList.remove('on');savePawns(pawns);renderPawn('semua');refreshDash();alert('✅ Disetujui!'+(amt>0&&p.type==='gadai'?' Dana '+fmt(amt)+' dicairkan ke dompet pelanggan.':''));}
+function doApprovePawn(){var p=pawns.find(function(x){return x.id===approvingPawnId;});if(!p)return;var amt=parseInt(document.getElementById('pawnApprAmt').value)||0;var jPct=parseFloat(document.getElementById('pawnJasaPct').value)||0;var jAmt=parseInt(document.getElementById('pawnJasaAmt').value)||0;p.status='approved';p.approvedAt=Date.now();p.loanAmt=amt;p.jasaPct=jPct;p.jasaAmt=jAmt;p.note=document.getElementById('pawnApprNote').value;var users=loadU();if(users[p.phone]){if(!users[p.phone].pawnItems)users[p.phone].pawnItems=[];users[p.phone].pawnItems=users[p.phone].pawnItems.filter(function(x){return x.id!==p.id;});users[p.phone].pawnItems.push({id:p.id,item:p.item,type:p.type,cat:p.cat||'',status:'approved',loanAmt:amt,jasaPct:jPct,jasaAmt:jAmt,date:p.date,photos:p.photos||[]});if(amt>0&&p.type==='gadai')users[p.phone].cbBalance=(users[p.phone].cbBalance||0)+amt;saveU(users);}document.getElementById('pawnApprModal').classList.remove('on');savePawns(pawns);renderPawn('semua');refreshDash();alert('✅ Disetujui!'+(amt>0&&p.type==='gadai'?' Dana '+fmt(amt)+' dicairkan ke dompet pelanggan.':''));}
 function rejectPawn(id){var p=pawns.find(function(x){return x.id===id;});if(!p||!confirm('Tolak pengajuan ini?'))return;p.status='rejected';var users3=loadU();if(users3[p.phone]){if(!users3[p.phone].pawnItems)users3[p.phone].pawnItems=[];users3[p.phone].pawnItems=users3[p.phone].pawnItems.filter(function(x){return x.id!==p.id;});users3[p.phone].pawnItems.push({id:p.id,item:p.item,type:p.type,status:'rejected',loanAmt:0,date:p.date});saveU(users3);}savePawns(pawns);renderPawn('semua');refreshDash();}
 
 function renderIncome(){var t=today();var iT=incomeData.filter(function(i){return i.date===t;}).reduce(function(a,b){return a+b.amount;},0);var iAll=incomeData.reduce(function(a,b){return a+b.amount;},0);document.getElementById('i-today').textContent=fmt(iT);document.getElementById('i-week').textContent=fmt(iAll);document.getElementById('i-month').textContent=fmt(iAll);document.getElementById('incTbl').innerHTML=incomeData.map(function(i){return '<tr><td>'+i.date+'</td><td>'+i.desc+'</td><td>'+i.src+'</td><td style="font-weight:700;color:var(--g1)">'+fmt(i.amount)+'</td><td style="font-size:11px;color:var(--gray)">'+i.note+'</td></tr>';}).join('');}

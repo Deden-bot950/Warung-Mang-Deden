@@ -106,7 +106,7 @@ button{cursor:pointer;font-family:inherit;border:none;}
 .wallet-hero h3{font-size:11px;font-weight:600;opacity:.9;text-transform:uppercase;letter-spacing:2px;position:relative;}
 .wallet-hero .bal{font-family:'Sora',sans-serif;font-size:34px;font-weight:800;margin:4px 0;position:relative;}
 .wallet-hero .sub{font-size:11px;opacity:.9;position:relative;}
-.wallet-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;position:relative;}
+.wallet-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px;position:relative;}
 .wa-btn{background:rgba(255,255,255,.22);color:#fff;padding:10px 4px;border-radius:11px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .wa-btn span:first-child{font-size:18px;}
 .saving-card{background:linear-gradient(135deg,#0f3960 0%,#1a4d7a 50%,var(--blue) 100%);color:#fff;border-radius:18px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
@@ -445,7 +445,7 @@ function updHdr() {
   try {
     const d = JSON.parse(localStorage.getItem('wmd_cats_v1')||'null');
     const base = d&&d.length ? d : ['Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
-    return ['semua',...base];
+    return ['semua',...base.filter(c => c!=='PPOB')];
   } catch(e) {
     return ['semua','Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
   }
@@ -507,22 +507,22 @@ function renderHome() {
       <div style="margin-bottom:14px;">
         <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;">🏪 Etalase Titip Jual</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
-          \${etalaseItems.map(item => \`
+          ${etalaseItems.map(item => `
             <div class="prod-card" style="border:2px solid var(--gold);">
               <div class="prod-ico" style="padding:0;overflow:hidden;background:linear-gradient(135deg,#5c4400,var(--gold));">
-                \${(item.photos&&item.photos[0])
-                  ? \`<img src="\${item.photos[0]}" style="width:100%;height:110px;object-fit:cover;border-radius:13px;">\`
-                  : \`<div style="font-size:48px;text-align:center;padding:18px 0;">📦</div>\`}
+                ${(item.photos&&item.photos[0])
+                  ? `<img src="${item.photos[0]}" style="width:100%;height:110px;object-fit:cover;border-radius:13px;">`
+                  : `<div style="font-size:48px;text-align:center;padding:18px 0;">📦</div>`}
               </div>
-              <div class="prod-name">\${item.item}</div>
-              <div style="font-size:10px;color:var(--gray);margin-bottom:4px;">Kondisi: \${item.cond}</div>
-              <div class="prod-price" style="color:var(--gold);">\${item.loanAmt>0?fmt(item.loanAmt):'Harga Nego'}</div>
+              <div class="prod-name">${item.item}</div>
+              <div style="font-size:10px;color:var(--gray);margin-bottom:4px;">Kondisi: ${item.cond||'-'}</div>
+              <div class="prod-price" style="color:var(--gold);">${item.loanAmt>0?fmt(item.loanAmt):'Harga Nego'}</div>
               <button class="prod-add" style="background:linear-gradient(135deg,#5c4400,var(--gold));margin-top:6px;"
-                onclick="hubungiPenjual('\${item.phone}','\${item.item}','\${item.seller}')">
+                onclick="hubungiPenjual('${item.phone}','${item.item}','${item.seller}')">
                 💬 Hubungi
               </button>
             </div>
-          \`).join('')}
+          `).join('')}
         </div>
       </div>
     `;
@@ -559,6 +559,7 @@ function renderEtalase() {
       });
     });
   }
+  items.sort((x,y) => (y.approvedAt||0) - (x.approvedAt||0));
   return items;
 }
 
@@ -604,7 +605,7 @@ function renderCbWidget() {
   el.style.display = 'block';
 }
 function renderProds() {
-  const prods = loadProds().filter(p => p.active && (curCat==='semua' || p.cat===curCat));
+  const prods = loadProds().filter(p => p.active && p.cat!=='PPOB' && (curCat==='semua' || p.cat===curCat));
   document.getElementById('prodGrid').innerHTML = prods.length ? prods.map(p => {
     const qty = cart[p.id]?.qty || 0;
     const outStock = p.stock !== 999 && p.stock <= 0;
@@ -659,6 +660,7 @@ function renderWallet() {
         <button class="wa-btn" onclick="openSaving()"><span>🏦</span>Nabung</button>
         <button class="wa-btn" onclick="openTransfer()"><span>↗️</span>Transfer</button>
         <button class="wa-btn" onclick="openPawn()"><span>🏷️</span>Gadai</button>
+        <button class="wa-btn" onclick="openPpob()"><span>📱</span>Pulsa</button>
       </div>
     </div>
     <div class="saving-card">
@@ -1056,6 +1058,37 @@ function openTransfer() {
   `;
   document.getElementById('modal').classList.add('on');
 }
+
+let ppobType='pulsa', ppobSel=null;
+function openPpob(t) {
+  if (t) ppobType=t; ppobSel=null;
+  const items=loadProds().filter(p => p.cat==='PPOB' && p.active!==false && (p.ppob||'pulsa')===ppobType);
+  const tabs=[['pulsa','📱 Pulsa'],['kuota','📶 Kuota'],['token','⚡ Token PLN']];
+  document.getElementById('modalBody').innerHTML=`
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <h3>📱 Pulsa, Kuota & Token</h3>
+    <div class="pay-grid" style="grid-template-columns:repeat(3,1fr);">${tabs.map(t => `<div class="pay-opt ${t[0]===ppobType?'on':''}" onclick="openPpob('${t[0]}')">${t[1]}</div>`).join('')}</div>
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;display:block;margin-top:12px;">${ppobType==='token'?'No. Meter / ID Pelanggan':'No. HP'}</label>
+    <input class="ain" id="ppNum" type="tel" placeholder="${ppobType==='token'?'Nomor meter PLN':'0812xxxx'}">
+    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;display:block;">Pilih Nominal</label>
+    ${items.length?`<div class="pay-grid" style="grid-template-columns:repeat(2,1fr);">${items.map(p => `<div class="pay-opt" data-pp="${p.id}" onclick="selPp('${p.id}',this)">${p.name}<br><b>${fmt(p.price)}</b></div>`).join('')}</div>`:'<p style="font-size:12px;color:var(--gray);">Daftar harga belum diisi admin.</p>'}
+    <button class="btn-prim" onclick="doPpob()">Beli Sekarang</button>`;
+  document.getElementById('modal').classList.add('on');
+}
+function selPp(id, el) { ppobSel=id; document.querySelectorAll('.pay-opt[data-pp]').forEach(x => x.classList.remove('on')); el.classList.add('on'); }
+function doPpob() {
+  const u=getU(); const s=loadSets();
+  const num=document.getElementById('ppNum').value.trim();
+  const p=loadProds().find(x => x.id===ppobSel);
+  if (!num || !p) { alert('Isi nomor dan pilih nominal!'); return; }
+  if (p.price > (u.cbBalance||0)) { alert('Saldo dompet tidak cukup! Butuh '+fmt(p.price)); return; }
+  const id=tid(); const lbl={pulsa:'Pulsa',kuota:'Kuota',token:'Token PLN'}[ppobType];
+  const rec={ id, dest:lbl, destNum:num, destName:p.name, amount:p.price, fee:0, status:'proses', date:today() };
+  updU(uu => { uu.cbBalance=(uu.cbBalance||0)-p.price; if (!uu.tfHistory) uu.tfHistory=[]; uu.tfHistory.unshift(rec); });
+  try { const a=JSON.parse(localStorage.getItem('wmd_tf_v1')||'[]'); a.unshift({...rec, cust:u.name, phone:u.phone}); localStorage.setItem('wmd_tf_v1', JSON.stringify(a)); scheduleCloudPush(); } catch(e) {}
+  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(`📱 *PEMBELIAN ${lbl.toUpperCase()}*\n\n👤 ${u.name}\n📞 ${u.phone}\nNomor: ${num}\nProduk: ${p.name}\n💰 ${fmt(p.price)}`));
+  closeModal(); alert('✅ Pesanan diproses!'); goPage('wallet');
+}
 function selTf(m, el) {
   selTfMethod = m;
   document.querySelectorAll('.pay-opt[data-tf]').forEach(x => x.classList.remove('on'));
@@ -1268,6 +1301,8 @@ function closeModal() { document.getElementById('modal').classList.remove('on');
 // Auto sync on page load
 (async function(){ await initCloudSync(); })();
 setInterval(function(){ if (typeof CU !== 'undefined' && CU) autoPullIfNeeded(); }, 30000);
+// Logo warung (diganti dari admin; jika belum ada tetap emoji)
+(function(){var i=new Image();i.onload=function(){document.querySelectorAll('.brand-ico,.h-ico').forEach(function(e){e.innerHTML='<img src="'+i.src+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">';});};i.src=SUPA_URL+'/storage/v1/object/public/produk/logo.png?t='+Math.floor(Date.now()/60000);})();
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('authWrap').style.display !== 'none') {

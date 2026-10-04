@@ -68,7 +68,11 @@ button{cursor:pointer;font-family:inherit;border:none;}
 /* QUICK SERVICES */
 .qs-section{margin-bottom:14px;}
 .qs-section-t{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;}
-.qs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.qs-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.qs-i[data-c="5"] .ico-wrap{background:linear-gradient(135deg,#e6dcff,#b9a3f5);}
+.qs-grid .qs-i{padding:12px 2px;}
+.qs-grid .qs-i .ico-wrap{width:40px;height:40px;font-size:19px;}
+.qs-grid .qs-lbl{font-size:10px!important;}
 .qs-i{background:#fff;border-radius:16px;padding:16px 6px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .25s;}
 .qs-i:hover{transform:translateY(-3px);box-shadow:var(--sh2);}
 .qs-i .ico-wrap{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;}
@@ -488,6 +492,10 @@ function renderHome() {
         <div class="qs-i" data-c="4" onclick="openPawn()">
           <div class="ico-wrap">🏷️</div>
           <div class="qs-lbl">Gadai/Jual</div>
+        </div>
+        <div class="qs-i" data-c="5" onclick="openPpob()">
+          <div class="ico-wrap">📱</div>
+          <div class="qs-lbl">Pulsa/Token</div>
         </div>
       </div>
     </div>
@@ -1559,5 +1567,6 @@ async function initCloudSync() {
 }
 
 </script>
+<div style="position:fixed;bottom:2px;left:6px;font-size:9px;color:#888;opacity:.7;z-index:5;pointer-events:none;">versi V5-PULSA-LOGO</div>
 </body>
 </html>

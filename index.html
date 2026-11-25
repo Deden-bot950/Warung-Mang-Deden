@@ -68,11 +68,7 @@ button{cursor:pointer;font-family:inherit;border:none;}
 /* QUICK SERVICES */
 .qs-section{margin-bottom:14px;}
 .qs-section-t{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;}
-.qs-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-.qs-i[data-c="5"] .ico-wrap{background:linear-gradient(135deg,#e6dcff,#b9a3f5);}
-.qs-grid .qs-i{padding:12px 2px;}
-.qs-grid .qs-i .ico-wrap{width:40px;height:40px;font-size:19px;}
-.qs-grid .qs-lbl{font-size:10px!important;}
+.qs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
 .qs-i{background:#fff;border-radius:16px;padding:16px 6px;text-align:center;cursor:pointer;box-shadow:var(--sh);transition:all .25s;}
 .qs-i:hover{transform:translateY(-3px);box-shadow:var(--sh2);}
 .qs-i .ico-wrap{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:22px;}
@@ -110,7 +106,7 @@ button{cursor:pointer;font-family:inherit;border:none;}
 .wallet-hero h3{font-size:11px;font-weight:600;opacity:.9;text-transform:uppercase;letter-spacing:2px;position:relative;}
 .wallet-hero .bal{font-family:'Sora',sans-serif;font-size:34px;font-weight:800;margin:4px 0;position:relative;}
 .wallet-hero .sub{font-size:11px;opacity:.9;position:relative;}
-.wallet-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px;position:relative;}
+.wallet-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;position:relative;}
 .wa-btn{background:rgba(255,255,255,.22);color:#fff;padding:10px 4px;border-radius:11px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .wa-btn span:first-child{font-size:18px;}
 .saving-card{background:linear-gradient(135deg,#0f3960 0%,#1a4d7a 50%,var(--blue) 100%);color:#fff;border-radius:18px;padding:20px;margin-bottom:12px;position:relative;overflow:hidden;}
@@ -380,7 +376,7 @@ function doLogin() {
   }
 }
 
-function doReg() {
+async function doReg() {
   const name = document.getElementById('rName').value.trim();
   const ph = document.getElementById('rPhone').value.trim();
   const addr = document.getElementById('rAddr').value.trim();
@@ -395,7 +391,9 @@ function doReg() {
     monthSpend:0, monthEarned:0, totalSpend:0,
     txHistory:[], wdHistory:[], tfHistory:[], svHistory:[], pawnItems:[]
   };
-  saveUsers(u);
+  localStorage.setItem(W_USERS, JSON.stringify(u));
+  showSyncStatus('busy','Mendaftarkan akun...');
+  await pushToCloud();
   CU = ph;
   enterApp();
 }
@@ -426,7 +424,6 @@ function goPage(p, el) {
     if (navEl) navEl.classList.add('on');
   }
   updHdr();
-  window._curPage = p;
   autoPullIfNeeded();
   if (p==='home')    renderHome();
   if (p==='wallet')  renderWallet();
@@ -449,7 +446,7 @@ function updHdr() {
   try {
     const d = JSON.parse(localStorage.getItem('wmd_cats_v1')||'null');
     const base = d&&d.length ? d : ['Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
-    return ['semua',...base.filter(c => c!=='PPOB')];
+    return ['semua',...base];
   } catch(e) {
     return ['semua','Sembako','Minuman','Snack','ATK','Kebersihan','Kosmetik','Pulsa & Token','Jasa'];
   }
@@ -493,10 +490,6 @@ function renderHome() {
           <div class="ico-wrap">🏷️</div>
           <div class="qs-lbl">Gadai/Jual</div>
         </div>
-        <div class="qs-i" data-c="5" onclick="openPpob()">
-          <div class="ico-wrap">📱</div>
-          <div class="qs-lbl">Pulsa/Token</div>
-        </div>
       </div>
     </div>
     <div class="qs-section-t" style="margin-top:18px;">🛒 Produk Tersedia</div>
@@ -515,22 +508,22 @@ function renderHome() {
       <div style="margin-bottom:14px;">
         <div style="font-family:'Sora',sans-serif;font-size:13px;font-weight:800;margin-bottom:10px;padding-left:4px;">🏪 Etalase Titip Jual</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
-          ${etalaseItems.map(item => `
+          \${etalaseItems.map(item => \`
             <div class="prod-card" style="border:2px solid var(--gold);">
               <div class="prod-ico" style="padding:0;overflow:hidden;background:linear-gradient(135deg,#5c4400,var(--gold));">
-                ${(item.photos&&item.photos[0])
-                  ? `<img src="${item.photos[0]}" style="width:100%;height:110px;object-fit:cover;border-radius:13px;">`
-                  : `<div style="font-size:48px;text-align:center;padding:18px 0;">📦</div>`}
+                \${(item.photos&&item.photos[0])
+                  ? \`<img src="\${item.photos[0]}" style="width:100%;height:110px;object-fit:cover;border-radius:13px;">\`
+                  : \`<div style="font-size:48px;text-align:center;padding:18px 0;">📦</div>\`}
               </div>
-              <div class="prod-name">${item.item}</div>
-              <div style="font-size:10px;color:var(--gray);margin-bottom:4px;">Kondisi: ${item.cond||'-'}</div>
-              <div class="prod-price" style="color:var(--gold);">${item.loanAmt>0?fmt(item.loanAmt):'Harga Nego'}</div>
+              <div class="prod-name">\${item.item}</div>
+              <div style="font-size:10px;color:var(--gray);margin-bottom:4px;">Kondisi: \${item.cond}</div>
+              <div class="prod-price" style="color:var(--gold);">\${item.loanAmt>0?fmt(item.loanAmt):'Harga Nego'}</div>
               <button class="prod-add" style="background:linear-gradient(135deg,#5c4400,var(--gold));margin-top:6px;"
-                onclick="hubungiPenjual('${item.phone}','${item.item}','${item.seller}')">
+                onclick="hubungiPenjual('\${item.phone}','\${item.item}','\${item.seller}')">
                 💬 Hubungi
               </button>
             </div>
-          `).join('')}
+          \`).join('')}
         </div>
       </div>
     `;
@@ -567,7 +560,6 @@ function renderEtalase() {
       });
     });
   }
-  items.sort((x,y) => (y.approvedAt||0) - (x.approvedAt||0));
   return items;
 }
 
@@ -613,7 +605,7 @@ function renderCbWidget() {
   el.style.display = 'block';
 }
 function renderProds() {
-  const prods = loadProds().filter(p => p.active && p.cat!=='PPOB' && (curCat==='semua' || p.cat===curCat));
+  const prods = loadProds().filter(p => p.active && (curCat==='semua' || p.cat===curCat));
   document.getElementById('prodGrid').innerHTML = prods.length ? prods.map(p => {
     const qty = cart[p.id]?.qty || 0;
     const outStock = p.stock !== 999 && p.stock <= 0;
@@ -668,7 +660,6 @@ function renderWallet() {
         <button class="wa-btn" onclick="openSaving()"><span>🏦</span>Nabung</button>
         <button class="wa-btn" onclick="openTransfer()"><span>↗️</span>Transfer</button>
         <button class="wa-btn" onclick="openPawn()"><span>🏷️</span>Gadai</button>
-        <button class="wa-btn" onclick="openPpob()"><span>📱</span>Pulsa</button>
       </div>
     </div>
     <div class="saving-card">
@@ -1066,37 +1057,6 @@ function openTransfer() {
   `;
   document.getElementById('modal').classList.add('on');
 }
-
-let ppobType='pulsa', ppobSel=null;
-function openPpob(t) {
-  if (t) ppobType=t; ppobSel=null;
-  const items=loadProds().filter(p => p.cat==='PPOB' && p.active!==false && (p.ppob||'pulsa')===ppobType);
-  const tabs=[['pulsa','📱 Pulsa'],['kuota','📶 Kuota'],['token','⚡ Token PLN']];
-  document.getElementById('modalBody').innerHTML=`
-    <button class="m-close" onclick="closeModal()">✕</button>
-    <h3>📱 Pulsa, Kuota & Token</h3>
-    <div class="pay-grid" style="grid-template-columns:repeat(3,1fr);">${tabs.map(t => `<div class="pay-opt ${t[0]===ppobType?'on':''}" onclick="openPpob('${t[0]}')">${t[1]}</div>`).join('')}</div>
-    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;display:block;margin-top:12px;">${ppobType==='token'?'No. Meter / ID Pelanggan':'No. HP'}</label>
-    <input class="ain" id="ppNum" type="tel" placeholder="${ppobType==='token'?'Nomor meter PLN':'0812xxxx'}">
-    <label style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;display:block;">Pilih Nominal</label>
-    ${items.length?`<div class="pay-grid" style="grid-template-columns:repeat(2,1fr);">${items.map(p => `<div class="pay-opt" data-pp="${p.id}" onclick="selPp('${p.id}',this)">${p.name}<br><b>${fmt(p.price)}</b></div>`).join('')}</div>`:'<p style="font-size:12px;color:var(--gray);">Daftar harga belum diisi admin.</p>'}
-    <button class="btn-prim" onclick="doPpob()">Beli Sekarang</button>`;
-  document.getElementById('modal').classList.add('on');
-}
-function selPp(id, el) { ppobSel=id; document.querySelectorAll('.pay-opt[data-pp]').forEach(x => x.classList.remove('on')); el.classList.add('on'); }
-function doPpob() {
-  const u=getU(); const s=loadSets();
-  const num=document.getElementById('ppNum').value.trim();
-  const p=loadProds().find(x => x.id===ppobSel);
-  if (!num || !p) { alert('Isi nomor dan pilih nominal!'); return; }
-  if (p.price > (u.cbBalance||0)) { alert('Saldo dompet tidak cukup! Butuh '+fmt(p.price)); return; }
-  const id=tid(); const lbl={pulsa:'Pulsa',kuota:'Kuota',token:'Token PLN'}[ppobType];
-  const rec={ id, dest:lbl, destNum:num, destName:p.name, amount:p.price, fee:0, status:'proses', date:today() };
-  updU(uu => { uu.cbBalance=(uu.cbBalance||0)-p.price; if (!uu.tfHistory) uu.tfHistory=[]; uu.tfHistory.unshift(rec); });
-  try { const a=JSON.parse(localStorage.getItem('wmd_tf_v1')||'[]'); a.unshift({...rec, cust:u.name, phone:u.phone}); localStorage.setItem('wmd_tf_v1', JSON.stringify(a)); scheduleCloudPush(); } catch(e) {}
-  window.open('https://wa.me/62'+s.waNum.replace(/^0/,'')+'?text='+encodeURIComponent(`📱 *PEMBELIAN ${lbl.toUpperCase()}*\n\n👤 ${u.name}\n📞 ${u.phone}\nNomor: ${num}\nProduk: ${p.name}\n💰 ${fmt(p.price)}`));
-  closeModal(); alert('✅ Pesanan diproses!'); goPage('wallet');
-}
 function selTf(m, el) {
   selTfMethod = m;
   document.querySelectorAll('.pay-opt[data-tf]').forEach(x => x.classList.remove('on'));
@@ -1220,21 +1180,9 @@ function handlePhotoUpload(input) {
         canvas.width = Math.round(img.width * ratio);
         canvas.height = Math.round(img.height * ratio);
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(async blob => {
-          const name = 'gadai/g' + Date.now() + '_' + Math.floor(Math.random()*1000) + '.jpg';
-          try {
-            const r = await fetch(SUPA_URL + '/storage/v1/object/produk/' + name, {
-              method: 'POST',
-              headers: {'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'image/jpeg'},
-              body: blob
-            });
-            if (!r.ok) { let t=''; try{ t=await r.text(); }catch(_){} throw new Error('HTTP ' + r.status + ' ' + t.slice(0,160)); }
-            pawnPhotos.push(SUPA_URL + '/storage/v1/object/public/produk/' + name);
-            renderPhotoPreview();
-          } catch (err) {
-            alert('⚠️ Upload foto gagal (' + err.message + '). Coba lagi.');
-          }
-        }, 'image/jpeg', 0.7);
+        const b64 = canvas.toDataURL('image/jpeg', 0.7);
+        pawnPhotos.push(b64);
+        renderPhotoPreview();
       };
       img.src = e.target.result;
     };
@@ -1308,9 +1256,6 @@ function closeModal() { document.getElementById('modal').classList.remove('on');
 
 // Auto sync on page load
 (async function(){ await initCloudSync(); })();
-setInterval(function(){ if (typeof CU !== 'undefined' && CU) autoPullIfNeeded(); }, 30000);
-// Logo warung (diganti dari admin; jika belum ada tetap emoji)
-window.addEventListener('load', function(){ setTimeout(function(){ var i=new Image(); i.onload=function(){ document.querySelectorAll('.brand-ico,.h-ico').forEach(function(e){ e.innerHTML='<img src="'+i.src+'" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">'; }); }; i.src=SUPA_URL+'/storage/v1/object/public/produk/logo.png?t='+Math.floor(Date.now()/60000); }, 300); });
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('authWrap').style.display !== 'none') {
@@ -1366,9 +1311,8 @@ async function supaUpsert(table, rows, onConflict) {
       headers: supaHeaders({'Prefer':'resolution=merge-duplicates,return=minimal'}),
       body: JSON.stringify(rows)
     });
-    if (!r.ok) { var t=''; try{ t=await r.text(); }catch(_){} window._syncErr = table+': HTTP '+r.status+' '+t.slice(0,220); }
     return r.ok;
-  } catch(e) { window._syncErr = table+': '+e.message; return false; }
+  } catch(e) { return false; }
 }
 
 async function supaSelectAll(table) {
@@ -1406,7 +1350,6 @@ function scheduleCloudPush() {
 }
 
 async function pushToCloud() {
-  window._syncErr = '';
   showSyncStatus('busy', 'Menyimpan...');
   try {
     var users = JSON.parse(localStorage.getItem('wmd_users_v2')||'{}');
@@ -1421,18 +1364,16 @@ async function pushToCloud() {
     });
     await supaUpsert('customers', custRows, 'phone');
 
-    // kategori harus ada dulu di database sebelum produk (foreign key)
-    var cats = JSON.parse(localStorage.getItem('wmd_cats_v1')||'[]');
     var prods = JSON.parse(localStorage.getItem('wmd_products_v2')||'[]');
-    prods.forEach(function(p){ if (p.cat && cats.indexOf(p.cat) < 0) cats.push(p.cat); });
-    var catRows = cats.map(function(c){ return {name:c}; });
-    await supaUpsert('categories', catRows, 'name');
-
     var prodRows = prods.map(function(p){
       return {id:p.id, name:p.name, icon:p.icon||'', price:p.price||0, stock:p.stock||0, unit:p.unit||'pcs',
         category:p.cat||null, badge:p.badge||'', active:p.active!==false, cb_rp:p.cbRp||0, data:p};
     });
     await supaUpsert('products', prodRows, 'id');
+
+    var cats = JSON.parse(localStorage.getItem('wmd_cats_v1')||'[]');
+    var catRows = cats.map(function(c){ return {name:c}; });
+    await supaUpsert('categories', catRows, 'name');
 
     var s = JSON.parse(localStorage.getItem('wmd_settings_v2')||'null');
     if (s) {
@@ -1473,8 +1414,7 @@ async function pushToCloud() {
     });
     await supaUpsert('pawns', pawnRows, 'id');
 
-    if (window._syncErr) showSyncStatus('err', 'Gagal sinkron: ' + window._syncErr.slice(0,60));
-    else showSyncStatus('ok', 'Tersimpan');
+    showSyncStatus('ok', 'Tersimpan');
   } catch(e) {
     showSyncStatus('err', 'Gagal simpan');
   }
@@ -1490,20 +1430,7 @@ async function autoPullIfNeeded() {
   }
 }
 
-function _dataSig() {
-  return ['wmd_products_v2','wmd_users_v2','wmd_cats_v1','wmd_settings_v2'].map(function(k){return localStorage.getItem(k)||'';}).join('|');
-}
-function refreshCurrentPage() {
-  try {
-    if (typeof CU === 'undefined' || !CU) return;
-    var p = window._curPage;
-    if (p === 'home') renderHome();
-    else if (p === 'wallet') renderWallet();
-    else if (p === 'history') renderHistory();
-  } catch (e) {}
-}
 async function pullFromCloud(silent) {
-  var _sigBefore = _dataSig();
   if (!silent) showSyncStatus('busy', 'Sinkronisasi...');
   try {
     var results = await Promise.all([
@@ -1553,7 +1480,6 @@ async function pullFromCloud(silent) {
     if (tfs.length) localStorage.setItem('wmd_tf_v1', JSON.stringify(tfs.map(function(t){ return t.data || t; })));
     if (pawns.length) localStorage.setItem('wmd_pawn_v1', JSON.stringify(pawns.map(function(p){ return p.data || p; })));
 
-    if (_dataSig() !== _sigBefore) refreshCurrentPage();
     if (!silent) showSyncStatus('ok', 'Tersinkron');
     return true;
   } catch(e) {
@@ -1567,6 +1493,5 @@ async function initCloudSync() {
 }
 
 </script>
-<div style="position:fixed;bottom:2px;left:6px;font-size:9px;color:#888;opacity:.7;z-index:5;pointer-events:none;">versi V6-LOGO</div>
 </body>
 </html>
